@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rayz Barbers Booking System
 
-## Getting Started
+Full-stack booking app for Rayz Barbers — customer landing page, 5-step booking modal with manual approval, and barber admin dashboard.
 
-First, run the development server:
+Built from the Claude Design prototype in [`design/`](design/).
+
+## Stack
+
+- **Next.js 16** (App Router) + TypeScript + Tailwind CSS v4
+- **Supabase** — Postgres + admin magic-link auth
+- **Drizzle ORM** — schema & migrations
+- **Stripe** — manual-capture payments (charged on approve)
+- **Resend** — booking notification emails
+
+## Quick start
+
+### 1. Install
+
+```bash
+npm install
+```
+
+### 2. Environment
+
+Copy `.env.local.example` to `.env.local` and fill in values.
+
+### 3. Database
+
+Create a [Supabase](https://supabase.com) project and copy the **Postgres connection string** (Session mode / direct) into `DATABASE_URL`.
+
+Push schema and seed services:
+
+```bash
+npm run db:push
+npm run db:seed
+```
+
+### 4. Supabase Auth
+
+In Supabase Dashboard → Authentication → URL configuration, add:
+
+- Site URL: `http://localhost:3000`
+- Redirect URLs: `http://localhost:3000/admin`
+
+Enable Email provider. Set `ADMIN_ALLOWED_EMAILS` to the barber's email.
+
+### 5. Stripe
+
+Create a Stripe account. Use test keys in `.env.local`.
+
+For webhooks (optional in dev):
+
+```bash
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+```
+
+Online bookings use **manual capture** — card is authorized at request time and captured when Ray approves in the admin dashboard.
+
+### 6. Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Customer site: [http://localhost:3000](http://localhost:3000)
+- Admin login: [http://localhost:3000/admin/login](http://localhost:3000/admin/login)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy (Vercel + Supabase)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Push repo to GitHub
+2. Import project in [Vercel](https://vercel.com)
+3. Add all env vars from `.env.local.example`
+4. Update Supabase auth redirect URLs to your production domain
+5. Point Stripe webhook to `https://your-domain.com/api/webhooks/stripe`
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/              # Pages & API routes
+  components/       # Landing, booking modal, admin UI
+  lib/              # DB, Stripe, availability, notifications
+design/             # Claude Design prototype (reference)
+drizzle/            # Generated migrations
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Booking flow
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Customer picks service → date/time → payment (online or cash) → contact details
+2. Request saved as **pending**
+3. Ray approves or declines in `/admin`
+4. Online payments captured on approve; cancelled on decline
+5. Customer receives email if address provided
 
-## Deploy on Vercel
+## Design reference
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Original interactive prototype: `design/Rayz Barbers Prototype.dc.html`  
+Open in a browser (with `design/support.js` alongside) to compare UI behavior.

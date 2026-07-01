@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f3efe7;font-family:'Patrick Hand',sans-serif}
+.dv-turn{padding:40px 44px 36px;border-bottom:1.5px dashed rgba(0,0,0,.18);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:12px;margin:0 0 22px}
+.dv-tid{font:700 12px ui-monospace,Menlo,monospace;padding:4px 8px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:400 22px/1.2 'Patrick Hand',sans-serif;color:#1a1a1a}
+.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:10px;scroll-margin-top:16px}
+.dv-oid{font:700 11px ui-monospace,Menlo,monospace;padding:3px 8px;background:rgba(0,0,0,.1);color:#1a1a1a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:19px/1.3 'Patrick Hand',sans-serif;color:rgba(0,0,0,.65)}
+.dv-card{max-width:100%;background:#fffdf8;border:2px solid rgba(0,0,0,.8);border-radius:4px;box-shadow:3px 3px 0 rgba(0,0,0,.12);overflow:visible;padding:20px}
+.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}
+.dv-next{margin:24px 0 0;font:17px/1.6 'Patrick Hand',sans-serif;color:rgba(0,0,0,.6)}
+.wf-line{height:5px;background:#d9d3c7;border-radius:3px}
+.wf-chip{border:1.5px solid #1a1a1a;border-radius:14px;padding:4px 9px;font:13px 'Patrick Hand',sans-serif;text-align:center}
+.wf-cap{font:14px 'Patrick Hand',sans-serif;color:#6b6b6b;text-align:center;margin-top:2px}
+.wf-arrow{font-size:26px;color:#c23b3b;align-self:center;flex:none}
+.wf-note{margin-top:16px;font:16px 'Patrick Hand',sans-serif;color:#8a2f2f}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Customer booking flow (mobile)</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a> Step-by-step wizard</div>
+<div class="dv-card">
+<div style="display:flex;align-items:flex-start;gap:6px;flex-wrap:nowrap;">
+
+<div style="display:flex;flex-direction:column;align-items:center;">
+<div style="width:150px;min-height:280px;border:2.5px solid #1a1a1a;border-radius:18px;background:#fff;padding:10px 8px;display:flex;flex-direction:column;gap:7px;">
+<div style="width:34px;height:4px;background:#1a1a1a;border-radius:3px;margin:0 auto 2px"></div>
+<div style="height:34px;background:#111;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#C99A3C;font:13px 'Patrick Hand';letter-spacing:1px">RAYZ BARBERS</div>
+<div style="height:64px;background:#e9e6df;border-radius:4px"></div>
+<div class="wf-line" style="width:80%"></div>
+<div class="wf-line" style="width:55%"></div>
+<div style="margin-top:auto;background:#C99A3C;border:1.5px solid #1a1a1a;border-radius:6px;text-align:center;padding:6px 4px;font:14px 'Patrick Hand'">Book Now</div>
+</div>
+<div class="wf-cap">1. Landing</div>
+</div>
+
+<div class="wf-arrow">→</div>
+
+<div style="display:flex;flex-direction:column;align-items:center;">
+<div style="width:150px;min-height:280px;border:2.5px solid #1a1a1a;border-radius:18px;background:#fff;padding:10px 8px;display:flex;flex-direction:column;gap:6px;">
+<div style="width:34px;height:4px;background:#1a1a1a;border-radius:3px;margin:0 auto 2px"></div>
+<div style="font:15px 'Patrick Hand'">Select a Service</div>
+<div style="border:1.5px solid #C99A3C;border-radius:6px;padding:6px 8px;display:flex;justify-content:space-between;font:12px 'Patrick Hand'"><span>Skin Fade</span><span>$35</span></div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:6px 8px;display:flex;justify-content:space-between;font:12px 'Patrick Hand'"><span>Beard Trim</span><span>$18</span></div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:6px 8px;display:flex;justify-content:space-between;font:12px 'Patrick Hand'"><span>Cut &amp; Beard</span><span>$48</span></div>
+<div style="margin-top:auto;background:#C99A3C;border:1.5px solid #1a1a1a;border-radius:6px;text-align:center;padding:6px 4px;font:14px 'Patrick Hand'">Next</div>
+</div>
+<div class="wf-cap">2. Service</div>
+</div>
+
+<div class="wf-arrow">→</div>
+
+<div style="display:flex;flex-direction:column;align-items:center;">
+<div style="width:150px;min-height:280px;border:2.5px solid #1a1a1a;border-radius:18px;background:#fff;padding:10px 8px;display:flex;flex-direction:column;gap:6px;">
+<div style="width:34px;height:4px;background:#1a1a1a;border-radius:3px;margin:0 auto 2px"></div>
+<div style="font:15px 'Patrick Hand'">Date &amp; Time</div>
+<div style="display:flex;gap:3px;justify-content:space-between">
+<div style="width:15px;height:15px;border-radius:50%;background:#1a1a1a"></div>
+<div style="width:15px;height:15px;border-radius:50%;border:1.5px solid #1a1a1a"></div>
+<div style="width:15px;height:15px;border-radius:50%;border:1.5px solid #1a1a1a"></div>
+<div style="width:15px;height:15px;border-radius:50%;border:1.5px solid #1a1a1a"></div>
+<div style="width:15px;height:15px;border-radius:50%;border:1.5px solid #1a1a1a"></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+<div class="wf-chip" style="padding:3px">9:00</div>
+<div class="wf-chip" style="padding:3px;background:#C99A3C">2:30</div>
+<div class="wf-chip" style="padding:3px">4:00</div>
+<div class="wf-chip" style="padding:3px">10:30</div>
+<div class="wf-chip" style="padding:3px">3:15</div>
+<div class="wf-chip" style="padding:3px">5:00</div>
+</div>
+<div style="margin-top:auto;background:#C99A3C;border:1.5px solid #1a1a1a;border-radius:6px;text-align:center;padding:6px 4px;font:14px 'Patrick Hand'">Next</div>
+</div>
+<div class="wf-cap">3. Date &amp; time</div>
+</div>
+
+<div class="wf-arrow">→</div>
+
+<div style="display:flex;flex-direction:column;align-items:center;">
+<div style="width:150px;min-height:280px;border:2.5px solid #1a1a1a;border-radius:18px;background:#fff;padding:10px 8px;display:flex;flex-direction:column;gap:8px;">
+<div style="width:34px;height:4px;background:#1a1a1a;border-radius:3px;margin:0 auto 2px"></div>
+<div style="font:15px 'Patrick Hand'">Payment</div>
+<div style="border:2px solid #C99A3C;border-radius:8px;padding:10px;font:13px 'Patrick Hand'">💳 Pay Online</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:8px;padding:10px;font:13px 'Patrick Hand'">💵 Pay Cash</div>
+<div style="margin-top:auto;background:#C99A3C;border:1.5px solid #1a1a1a;border-radius:6px;text-align:center;padding:6px 4px;font:14px 'Patrick Hand'">Next</div>
+</div>
+<div class="wf-cap">4. Payment</div>
+</div>
+
+<div class="wf-arrow">→</div>
+
+<div style="display:flex;flex-direction:column;align-items:center;">
+<div style="width:150px;min-height:280px;border:2.5px solid #1a1a1a;border-radius:18px;background:#fff;padding:10px 8px;display:flex;flex-direction:column;gap:8px;">
+<div style="width:34px;height:4px;background:#1a1a1a;border-radius:3px;margin:0 auto 2px"></div>
+<div style="font:15px 'Patrick Hand'">Your Details</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:8px"><div class="wf-line" style="width:60%"></div></div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:8px"><div class="wf-line" style="width:45%"></div></div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:8px"><div class="wf-line" style="width:70%"></div></div>
+<div style="margin-top:auto;background:#C99A3C;border:1.5px solid #1a1a1a;border-radius:6px;text-align:center;padding:6px 4px;font:14px 'Patrick Hand'">Submit Request</div>
+</div>
+<div class="wf-cap">5. Contact</div>
+</div>
+
+<div class="wf-arrow">→</div>
+
+<div style="display:flex;flex-direction:column;align-items:center;">
+<div style="width:150px;min-height:280px;border:2.5px solid #1a1a1a;border-radius:18px;background:#fff;padding:10px 8px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;text-align:center">
+<div style="width:44px;height:44px;border-radius:50%;border:2.5px solid #1a1a1a;display:flex;align-items:center;justify-content:center;font:20px 'Patrick Hand'">✓</div>
+<div style="font:16px 'Patrick Hand'">Request Sent!</div>
+<div style="background:#eee;border:1.5px solid #1a1a1a;border-radius:12px;padding:3px 10px;font:12px 'Patrick Hand'">Pending Approval</div>
+<div class="wf-line" style="width:80%"></div>
+</div>
+<div class="wf-cap">6. Confirmation</div>
+</div>
+
+</div>
+<div class="wf-note">⚠ thorough, but 6 screens / 6 taps before submit — clearest for a first-time booker</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a> Single scrolling page (accordion)</div>
+<div class="dv-card">
+<div style="display:flex;align-items:flex-start;gap:16px">
+
+<div style="display:flex;flex-direction:column;align-items:center;">
+<div style="width:170px;min-height:340px;border:2.5px solid #1a1a1a;border-radius:18px;background:#fff;padding:10px 8px;display:flex;flex-direction:column;gap:7px;">
+<div style="width:34px;height:4px;background:#1a1a1a;border-radius:3px;margin:0 auto 2px"></div>
+<div style="font:16px 'Patrick Hand';text-align:center">Book an Appointment</div>
+<div style="border:1.5px solid #C99A3C;border-radius:6px;padding:6px">
+<div style="font:13px 'Patrick Hand'">1. Service ▾</div>
+<div style="margin-top:5px;display:flex;flex-direction:column;gap:4px">
+<div class="wf-chip">Skin Fade — $35</div>
+<div class="wf-chip">Beard Trim — $18</div>
+<div class="wf-chip">Cut &amp; Beard — $48</div>
+</div>
+</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:6px;font:13px 'Patrick Hand';display:flex;justify-content:space-between">2. Date &amp; Time <span>▸</span></div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:6px;font:13px 'Patrick Hand';display:flex;justify-content:space-between">3. Payment <span>▸</span></div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:6px;font:13px 'Patrick Hand';display:flex;justify-content:space-between">4. Your Details <span>▸</span></div>
+<div style="margin-top:auto;background:#ddd;color:#888;border:1.5px solid #999;border-radius:6px;text-align:center;padding:7px 4px;font:14px 'Patrick Hand'">Continue</div>
+</div>
+<div class="wf-cap">initial — one section open</div>
+</div>
+
+<div class="wf-arrow">→</div>
+
+<div style="display:flex;flex-direction:column;align-items:center;">
+<div style="width:170px;min-height:340px;border:2.5px solid #1a1a1a;border-radius:18px;background:#fff;padding:10px 8px;display:flex;flex-direction:column;gap:7px;">
+<div style="width:34px;height:4px;background:#1a1a1a;border-radius:3px;margin:0 auto 2px"></div>
+<div style="font:16px 'Patrick Hand';text-align:center">Book an Appointment</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:6px;font:13px 'Patrick Hand'">1. Skin Fade ✓</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:6px;font:13px 'Patrick Hand'">2. Thu 2:30pm ✓</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:6px;font:13px 'Patrick Hand'">3. Pay Online ✓</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:6px;padding:6px;font:13px 'Patrick Hand'">4. Sam R. ✓</div>
+<div style="margin-top:auto;background:#C99A3C;border:1.5px solid #1a1a1a;border-radius:6px;text-align:center;padding:7px 4px;font:14px 'Patrick Hand'">Request Booking</div>
+</div>
+<div class="wf-cap">all filled — ready to submit</div>
+</div>
+
+</div>
+<div class="wf-note">no page changes, feels quick — but a lot to scroll through up front</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a> Conversational / chat-style</div>
+<div class="dv-card">
+<div style="width:190px;min-height:400px;border:2.5px solid #1a1a1a;border-radius:18px;background:#fff;padding:10px 8px;display:flex;flex-direction:column;gap:6px;">
+<div style="width:34px;height:4px;background:#1a1a1a;border-radius:3px;margin:0 auto 2px"></div>
+<div style="background:#eee;border-radius:10px 10px 10px 2px;padding:6px 8px;font:12px 'Patrick Hand';max-width:85%">Hey 👋 what are you after today?</div>
+<div style="display:flex;gap:4px;flex-wrap:wrap"><div class="wf-chip" style="background:#C99A3C;padding:3px 7px">Skin Fade</div><div class="wf-chip" style="padding:3px 7px">Beard Trim</div></div>
+<div style="align-self:flex-end;background:#1a1a1a;color:#fff;border-radius:10px 10px 2px 10px;padding:6px 8px;font:12px 'Patrick Hand'">Skin Fade</div>
+<div style="background:#eee;border-radius:10px 10px 10px 2px;padding:6px 8px;font:12px 'Patrick Hand';max-width:85%">Nice. When works?</div>
+<div style="display:flex;gap:4px;flex-wrap:wrap"><div class="wf-chip" style="padding:3px 7px">10:30</div><div class="wf-chip" style="background:#C99A3C;padding:3px 7px">2:30</div><div class="wf-chip" style="padding:3px 7px">5:00</div></div>
+<div style="align-self:flex-end;background:#1a1a1a;color:#fff;border-radius:10px 10px 2px 10px;padding:6px 8px;font:12px 'Patrick Hand'">Thu 2:30pm</div>
+<div style="background:#eee;border-radius:10px 10px 10px 2px;padding:6px 8px;font:12px 'Patrick Hand';max-width:90%">Pay online, or cash at the shop?</div>
+<div style="display:flex;gap:4px"><div class="wf-chip" style="padding:3px 7px">Online</div><div class="wf-chip" style="background:#C99A3C;padding:3px 7px">Cash</div></div>
+<div style="background:#eee;border-radius:10px 10px 10px 2px;padding:6px 8px;font:12px 'Patrick Hand';max-width:90%">✅ Sent to Ray — you'll hear back soon!</div>
+<div style="margin-top:auto;border:1.5px solid #1a1a1a;border-radius:16px;padding:6px 10px;font:12px 'Patrick Hand';color:#999">Type a message…</div>
+</div>
+<div class="wf-note">novel &amp; guided, feels personal — but slower to skim than a form for a returning customer</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "combine <a class="dv-oid" href="#1a">1a</a>'s clarity with <a class="dv-oid" href="#1b">1b</a>'s speed" · "add barber selection back into <a class="dv-oid" href="#1a">1a</a>" · "push further on <a class="dv-oid" href="#1c">1c</a>"</p>
+</section>
+
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Barber / admin dashboard</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a">
+<div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a> List-first (pending queue up top)</div>
+<div class="dv-card">
+<div style="display:flex;align-items:flex-start;gap:16px">
+
+<div style="width:340px;border:2px solid #1a1a1a;border-radius:6px;background:#fff;overflow:hidden">
+<div style="height:20px;background:#eee;border-bottom:1.5px solid #1a1a1a;display:flex;align-items:center;gap:4px;padding:0 8px">
+<div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div><div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div><div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div>
+</div>
+<div style="display:flex">
+<div style="width:78px;border-right:1.5px solid #1a1a1a;padding:10px 6px;display:flex;flex-direction:column;gap:10px;font:12px 'Patrick Hand'">
+<div style="background:#1a1a1a;color:#fff;border-radius:4px;padding:3px 4px">● Pending</div>
+<div>Upcoming</div>
+<div>Calendar</div>
+<div>Services &amp; Pricing</div>
+</div>
+<div style="flex:1;padding:10px;display:flex;flex-direction:column;gap:7px">
+<div style="font:14px 'Patrick Hand'">Pending Requests (4)</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:5px;padding:5px 7px;display:flex;justify-content:space-between;align-items:center;font:11px 'Patrick Hand'"><span>Sam R. — Skin Fade, Thu 2:30</span><span style="display:flex;gap:3px"><span style="border:1.5px solid #C99A3C;border-radius:3px;padding:1px 5px">✓</span><span style="border:1.5px solid #999;border-radius:3px;padding:1px 5px">✕</span></span></div>
+<div style="border:1.5px solid #1a1a1a;border-radius:5px;padding:5px 7px;display:flex;justify-content:space-between;align-items:center;font:11px 'Patrick Hand'"><span>Jo P. — Beard Trim, Fri 10:00</span><span style="display:flex;gap:3px"><span style="border:1.5px solid #C99A3C;border-radius:3px;padding:1px 5px">✓</span><span style="border:1.5px solid #999;border-radius:3px;padding:1px 5px">✕</span></span></div>
+<div style="border:1.5px solid #1a1a1a;border-radius:5px;padding:5px 7px;display:flex;justify-content:space-between;align-items:center;font:11px 'Patrick Hand'"><span>Alex T. — Cut &amp; Beard, Fri 1pm</span><span style="display:flex;gap:3px"><span style="border:1.5px solid #C99A3C;border-radius:3px;padding:1px 5px">✓</span><span style="border:1.5px solid #999;border-radius:3px;padding:1px 5px">✕</span></span></div>
+<div style="border:1.5px solid #ccc;border-radius:5px;padding:5px 7px;font:11px 'Patrick Hand';color:#999">Upcoming (7) ▸</div>
+</div>
+</div>
+</div>
+<div class="wf-cap" style="margin-top:-2px">main queue</div>
+</div>
+
+<div class="wf-arrow">→</div>
+
+<div style="display:flex;flex-direction:column;align-items:center">
+<div style="width:200px;border:2px solid #1a1a1a;border-radius:6px;background:#fff;overflow:hidden">
+<div style="height:20px;background:#eee;border-bottom:1.5px solid #1a1a1a;display:flex;align-items:center;gap:4px;padding:0 8px">
+<div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div><div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div><div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div>
+</div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:6px">
+<div style="font:13px 'Patrick Hand'">Services &amp; Pricing</div>
+<div style="display:flex;justify-content:space-between;align-items:center;border:1.5px solid #1a1a1a;border-radius:5px;padding:4px 6px;font:11px 'Patrick Hand'"><span>Skin Fade</span><span style="display:flex;gap:3px;align-items:center">$<span style="border-bottom:1.5px solid #1a1a1a;width:20px;display:inline-block">35</span> ✎</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;border:1.5px solid #1a1a1a;border-radius:5px;padding:4px 6px;font:11px 'Patrick Hand'"><span>Beard Trim</span><span style="display:flex;gap:3px;align-items:center">$<span style="border-bottom:1.5px solid #1a1a1a;width:20px;display:inline-block">18</span> ✎</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;border:1.5px solid #1a1a1a;border-radius:5px;padding:4px 6px;font:11px 'Patrick Hand'"><span>Cut &amp; Beard</span><span style="display:flex;gap:3px;align-items:center">$<span style="border-bottom:1.5px solid #1a1a1a;width:20px;display:inline-block">48</span> ✎</span></div>
+</div>
+</div>
+<div class="wf-cap">barber edits prices inline</div>
+</div>
+
+</div>
+<div class="wf-note">clear "needs action" queue up front; prices live behind the sidebar tab</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2b">
+<div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a> Calendar-first</div>
+<div class="dv-card">
+<div style="width:400px;border:2px solid #1a1a1a;border-radius:6px;background:#fff;overflow:hidden">
+<div style="height:20px;background:#eee;border-bottom:1.5px solid #1a1a1a;display:flex;align-items:center;gap:4px;padding:0 8px">
+<div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div><div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div><div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div>
+</div>
+<div style="display:flex">
+<div style="flex:1;padding:10px">
+<div style="display:flex;gap:4px;margin-bottom:6px"><div class="wf-chip" style="background:#1a1a1a;color:#fff;padding:2px 8px">Week</div><div class="wf-chip" style="padding:2px 8px">Day</div></div>
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px">
+<div style="height:16px;background:#1a1a1a;border-radius:2px"></div><div style="height:16px;border:1.5px solid #C99A3C;border-radius:2px"></div><div style="height:16px;background:#eee;border-radius:2px"></div><div style="height:16px;background:#eee;border-radius:2px"></div><div style="height:16px;background:#1a1a1a;border-radius:2px"></div><div style="height:16px;background:#eee;border-radius:2px"></div>
+<div style="height:16px;background:#eee;border-radius:2px"></div><div style="height:16px;background:#1a1a1a;border-radius:2px"></div><div style="height:16px;border:1.5px solid #C99A3C;border-radius:2px"></div><div style="height:16px;background:#eee;border-radius:2px"></div><div style="height:16px;background:#eee;border-radius:2px"></div><div style="height:16px;background:#eee;border-radius:2px"></div>
+<div style="height:16px;background:#eee;border-radius:2px"></div><div style="height:16px;background:#eee;border-radius:2px"></div><div style="height:16px;background:#eee;border-radius:2px"></div><div style="height:16px;background:#1a1a1a;border-radius:2px"></div><div style="height:16px;background:#eee;border-radius:2px"></div><div style="height:16px;border:1.5px solid #C99A3C;border-radius:2px"></div>
+</div>
+<div style="font:11px 'Patrick Hand';color:#888;margin-top:4px">■ booked &nbsp; ▢ gold = pending &nbsp; ▢ grey = open</div>
+</div>
+<div style="width:110px;border-left:1.5px solid #1a1a1a;padding:8px 6px;display:flex;flex-direction:column;gap:5px">
+<div style="font:12px 'Patrick Hand'">Pending</div>
+<div style="border:1.5px solid #C99A3C;border-radius:4px;padding:3px 5px;font:10px 'Patrick Hand'">Sam — Tue</div>
+<div style="border:1.5px solid #C99A3C;border-radius:4px;padding:3px 5px;font:10px 'Patrick Hand'">Jo — Wed</div>
+<div style="border:1.5px solid #C99A3C;border-radius:4px;padding:3px 5px;font:10px 'Patrick Hand'">Alex — Fri</div>
+</div>
+</div>
+</div>
+<div class="wf-note">tap a pending card → its slot highlights on the grid; great for spotting gaps, busier at a glance</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2c">
+<div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a> Kanban columns</div>
+<div class="dv-card">
+<div style="width:400px;border:2px solid #1a1a1a;border-radius:6px;background:#fff;overflow:hidden">
+<div style="height:20px;background:#eee;border-bottom:1.5px solid #1a1a1a;display:flex;align-items:center;gap:6px;padding:0 8px">
+<div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div><div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div><div style="width:7px;height:7px;border-radius:50%;background:#1a1a1a"></div>
+<div style="margin-left:auto;font:11px 'Patrick Hand'">⚙ services &amp; pricing</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px">
+<div>
+<div style="font:12px 'Patrick Hand';margin-bottom:4px">Pending (3)</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:5px;padding:5px;font:10px 'Patrick Hand';margin-bottom:4px">Sam — Skin Fade<br><span style="display:flex;gap:3px;margin-top:3px"><span style="border:1.5px solid #C99A3C;border-radius:3px;padding:0 4px">✓</span><span style="border:1.5px solid #999;border-radius:3px;padding:0 4px">✕</span></span></div>
+<div style="border:1.5px solid #1a1a1a;border-radius:5px;padding:5px;font:10px 'Patrick Hand'">Jo — Beard Trim</div>
+</div>
+<div>
+<div style="font:12px 'Patrick Hand';margin-bottom:4px">Approved (5)</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:5px;padding:5px;font:10px 'Patrick Hand';margin-bottom:4px">Alex — Cut &amp; Beard<br><span style="font:9px 'Patrick Hand';color:#888">paid online</span></div>
+<div style="border:1.5px solid #1a1a1a;border-radius:5px;padding:5px;font:10px 'Patrick Hand'">Priya — Skin Fade<br><span style="font:9px 'Patrick Hand';color:#888">cash</span></div>
+</div>
+<div>
+<div style="font:12px 'Patrick Hand';margin-bottom:4px">Completed</div>
+<div style="border:1.5px solid #ccc;border-radius:5px;padding:5px;font:10px 'Patrick Hand';color:#999">Marcus — Cut</div>
+</div>
+</div>
+</div>
+<div class="wf-note">status at a glance across the whole week; gear icon opens the same editable price list as 2a</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "make <a class="dv-oid" href="#2b">2b</a> the primary, with pending as a strip on top" · "show the decline flow" · "combine <a class="dv-oid" href="#2a">2a</a> sidebar with <a class="dv-oid" href="#2c">2c</a> columns"</p>
+</section>
+
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">Landing page (desktop)</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="3a">
+<div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a> Hero-forward, minimal</div>
+<div class="dv-card">
+<div style="width:220px;border:2px solid #1a1a1a;border-radius:6px;background:#fff;overflow:hidden">
+<div style="height:18px;background:#eee;border-bottom:1.5px solid #1a1a1a;display:flex;align-items:center;gap:4px;padding:0 6px"><div style="width:6px;height:6px;border-radius:50%;background:#1a1a1a"></div><div style="width:6px;height:6px;border-radius:50%;background:#1a1a1a"></div><div style="width:6px;height:6px;border-radius:50%;background:#1a1a1a"></div></div>
+<div style="background:#111;padding:22px 12px;display:flex;flex-direction:column;align-items:center;gap:6px">
+<div style="color:#C99A3C;font:800 22px 'Patrick Hand';letter-spacing:2px">RAYZ</div>
+<div style="height:4px;width:60%;background:#555;border-radius:2px"></div>
+<div style="background:#C99A3C;border-radius:5px;padding:5px 14px;font:12px 'Patrick Hand';margin-top:4px">Book Now</div>
+</div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:6px">
+<div style="font:12px 'Patrick Hand'">Services</div>
+<div style="display:flex;gap:4px"><div style="flex:1;border:1.5px solid #1a1a1a;border-radius:4px;height:24px"></div><div style="flex:1;border:1.5px solid #1a1a1a;border-radius:4px;height:24px"></div><div style="flex:1;border:1.5px solid #1a1a1a;border-radius:4px;height:24px"></div></div>
+<div class="wf-line" style="width:90%"></div><div class="wf-line" style="width:70%"></div>
+<div style="font:12px 'Patrick Hand';margin-top:4px">On Instagram</div>
+<div style="display:flex;gap:3px"><div style="flex:1;aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div><div style="flex:1;aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div><div style="flex:1;aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div></div>
+<div style="height:34px;background:#e9e6df;border-radius:4px;margin-top:4px"></div>
+<div style="display:flex;gap:5px;justify-content:center;margin-top:2px"><div style="width:14px;height:14px;border-radius:50%;border:1.5px solid #1a1a1a"></div><div style="width:14px;height:14px;border-radius:50%;border:1.5px solid #1a1a1a"></div><div style="width:14px;height:14px;border-radius:50%;border:1.5px solid #1a1a1a"></div></div>
+</div>
+<div style="background:#C99A3C;text-align:center;padding:5px;font:12px 'Patrick Hand';border-top:1.5px solid #1a1a1a">Book Now</div>
+</div>
+<div class="wf-note">brand-first, straightforward top-to-bottom scroll</div>
+</div>
+</div>
+
+<div class="dv-opt" id="3b">
+<div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a> Instagram / gallery-forward</div>
+<div class="dv-card">
+<div style="width:220px;border:2px solid #1a1a1a;border-radius:6px;background:#fff;overflow:hidden">
+<div style="height:18px;background:#eee;border-bottom:1.5px solid #1a1a1a;display:flex;align-items:center;gap:4px;padding:0 6px"><div style="width:6px;height:6px;border-radius:50%;background:#1a1a1a"></div><div style="width:6px;height:6px;border-radius:50%;background:#1a1a1a"></div><div style="width:6px;height:6px;border-radius:50%;background:#1a1a1a"></div></div>
+<div style="background:#111;padding:10px 12px;display:flex;flex-direction:column;align-items:center;gap:4px">
+<div style="color:#C99A3C;font:800 16px 'Patrick Hand';letter-spacing:2px">RAYZ</div>
+<div style="background:#C99A3C;border-radius:5px;padding:3px 10px;font:11px 'Patrick Hand'">Book Now</div>
+</div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:6px">
+<div style="font:12px 'Patrick Hand'">@rayzbarbers</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px">
+<div style="aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div><div style="aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div><div style="aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div>
+<div style="aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div><div style="aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div><div style="aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div>
+</div>
+<div style="font:12px 'Patrick Hand';margin-top:4px">Services</div>
+<div class="wf-line" style="width:85%"></div><div class="wf-line" style="width:60%"></div>
+<div class="wf-line" style="width:90%"></div>
+<div style="height:30px;background:#e9e6df;border-radius:4px;margin-top:4px"></div>
+</div>
+<div style="background:#C99A3C;text-align:center;padding:5px;font:12px 'Patrick Hand';border-top:1.5px solid #1a1a1a">Book Now</div>
+</div>
+<div class="wf-note">leads with social proof / real cuts before asking for the booking</div>
+</div>
+</div>
+
+<div class="dv-opt" id="3c">
+<div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a> Booking widget in hero</div>
+<div class="dv-card">
+<div style="width:220px;border:2px solid #1a1a1a;border-radius:6px;background:#fff;overflow:hidden">
+<div style="height:18px;background:#eee;border-bottom:1.5px solid #1a1a1a;display:flex;align-items:center;gap:4px;padding:0 6px"><div style="width:6px;height:6px;border-radius:50%;background:#1a1a1a"></div><div style="width:6px;height:6px;border-radius:50%;background:#1a1a1a"></div><div style="width:6px;height:6px;border-radius:50%;background:#1a1a1a"></div></div>
+<div style="background:#111;padding:10px 10px;display:flex;flex-direction:column;gap:6px">
+<div style="color:#C99A3C;font:800 15px 'Patrick Hand';letter-spacing:1px">RAYZ</div>
+<div style="background:#fff;border-radius:6px;padding:7px;display:flex;flex-direction:column;gap:4px">
+<div style="border:1.5px solid #1a1a1a;border-radius:4px;padding:2px 5px;font:10px 'Patrick Hand'">Service ▾</div>
+<div style="border:1.5px solid #1a1a1a;border-radius:4px;padding:2px 5px;font:10px 'Patrick Hand'">Thu, 2:30pm ▾</div>
+<div style="background:#C99A3C;border-radius:4px;text-align:center;padding:3px;font:11px 'Patrick Hand'">Book Now</div>
+</div>
+</div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;gap:3px"><div style="flex:1;aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div><div style="flex:1;aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div><div style="flex:1;aspect-ratio:9/16;background:#e9e6df;border-radius:3px"></div></div>
+<div style="font:12px 'Patrick Hand'">Services</div>
+<div class="wf-line" style="width:85%"></div><div class="wf-line" style="width:60%"></div>
+<div style="height:26px;background:#e9e6df;border-radius:4px"></div>
+</div>
+</div>
+<div class="wf-note">booking starts immediately in the hero — no scroll or extra page needed</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "put IG reels above the fold in <a class="dv-oid" href="#3a">3a</a>" · "make the <a class="dv-oid" href="#3c">3c</a> widget full-width" · "add real logo once uploaded"</p>
+</section>
+
+</x-dc>
+</body>
+</html>

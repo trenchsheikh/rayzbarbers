@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@keyframes rz-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+@keyframes rz-check-draw { to { stroke-dashoffset:0 } }
+@keyframes rz-toast-in { from{opacity:0;transform:translate(-50%,10px)} to{opacity:1;transform:translate(-50%,0)} }
+@keyframes rz-spin { to{transform:rotate(360deg)} }
+body{margin:0;font-family:'Work Sans',sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+::selection{background:#C99A3C;color:#0d0d0d}
+</style>
+</helmet>
+
+<div style="position:relative;min-height:100vh;background:{{ themeBg }}">
+
+<div style="position:fixed;top:14px;right:14px;z-index:900;display:flex;flex-direction:column;align-items:flex-end;gap:6px;font-family:'Work Sans',sans-serif">
+  <div style="font-size:10px;color:rgba(150,150,150,.7);letter-spacing:.08em">PROTOTYPE VIEW</div>
+  <div style="display:flex;background:rgba(120,120,120,.16);backdrop-filter:blur(16px);border:1px solid rgba(120,120,120,.22);border-radius:999px;padding:4px;gap:2px">
+    <button onClick="{{ showCustomerView }}" style="{{ customerTabStyle }}">Customer Site</button>
+    <button onClick="{{ showAdminView }}" style="{{ adminTabBtnStyle }}">Barber Dashboard</button>
+  </div>
+</div>
+
+<div style="position:fixed;top:14px;left:14px;z-index:900;display:flex;flex-direction:column;gap:6px;font-family:'Work Sans',sans-serif">
+  <div style="font-size:10px;color:rgba(150,150,150,.7);letter-spacing:.08em">THEME</div>
+  <div style="display:flex;background:rgba(120,120,120,.16);backdrop-filter:blur(16px);border:1px solid rgba(120,120,120,.22);border-radius:999px;padding:4px;gap:2px">
+    <button onClick="{{ setLightTheme }}" style="{{ lightThemeBtnStyle }}">☀ Light</button>
+    <button onClick="{{ setDarkTheme }}" style="{{ darkThemeBtnStyle }}">☾ Dark</button>
+  </div>
+</div>
+
+<sc-if value="{{ isCustomerView }}" hint-placeholder-val="{{ true }}">
+<div>
+
+<section style="position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;overflow:hidden;background:{{ heroBackground }}">
+  <div style="font-family:'Anton',sans-serif;font-size:clamp(56px,15vw,132px);line-height:.88;letter-spacing:.01em;color:{{ themeText }}">RAYZ</div>
+  <div style="font-family:'Anton',sans-serif;font-size:clamp(56px,15vw,132px);color:#C99A3C;letter-spacing:.01em;line-height:.88;margin-top:-6px">BARBERS</div>
+  <div style="margin-top:22px;font-size:18px;max-width:420px;line-height:1.5;color:{{ themeTextMuted }}">Sharp fades and straight razor lines. Booked in under a minute.</div>
+  <button onClick="{{ openBookingGeneric }}" style="margin-top:36px;background:#C99A3C;color:#0d0d0d;border:none;padding:17px 42px;border-radius:999px;font:700 16px 'Work Sans';letter-spacing:.01em;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease" style-hover="transform:scale(1.045);box-shadow:0 10px 34px rgba(201,154,60,.35)">Book Now</button>
+  <div style="margin-top:18px;font-size:12px;color:{{ themeTextFaint }}">No account needed · Every booking reviewed by Ray</div>
+  <div style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);animation:rz-bounce 1.8s ease-in-out infinite;font-size:22px;color:{{ themeTextFaint }}">⌄</div>
+</section>
+
+<section style="padding:100px 24px 90px;max-width:1000px;margin:0 auto">
+  <div style="font-family:'Anton',sans-serif;font-size:clamp(28px,5vw,38px);text-align:center;margin-bottom:10px;letter-spacing:.01em;color:{{ themeText }}">SERVICES</div>
+  <div style="text-align:center;margin-bottom:48px;font-size:15px;color:{{ themeTextMuted }}">Pick one — or ask Ray for a combo in person</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px">
+    <sc-for list="{{ landingServices }}" as="svc" hint-placeholder-count="3">
+      <div style="{{ svc.cardStyle }}">
+        <div style="{{ svc.iconWrapStyle }}">
+          <sc-if value="{{ svc.isFade }}" hint-placeholder-val="{{ true }}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M6.5 12h11M9.5 17h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </sc-if>
+          <sc-if value="{{ svc.isBeard }}" hint-placeholder-val="{{ false }}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4.5 15.2L15 4.7l3.3 3.3-10.5 10.5H4.5v-3.3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/><path d="M14.6 6.1l3.3 3.3" stroke="currentColor" stroke-width="1.7"/></svg>
+          </sc-if>
+          <sc-if value="{{ svc.isScissors }}" hint-placeholder-val="{{ false }}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="6.2" cy="6.2" r="2.3" stroke="currentColor" stroke-width="1.7"/><circle cx="6.2" cy="17.8" r="2.3" stroke="currentColor" stroke-width="1.7"/><path d="M8 7.8L19.5 18M8 16.2L19.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </sc-if>
+        </div>
+        <div style="{{ svc.nameStyle }}">{{ svc.name }}</div>
+        <div style="font-size:14px;color:{{ themeTextMuted }}">{{ svc.durationLabel }}</div>
+        <div style="{{ svc.footRowStyle }}">
+          <div style="font:800 23px 'Work Sans';color:#C99A3C">{{ svc.priceLabel }}</div>
+          <button onClick="{{ svc.bookHandler }}" style="{{ svc.bookBtnStyle }}">Book</button>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section style="padding:20px 24px 90px;max-width:1080px;margin:0 auto">
+  <div style="{{ panelStyle }}display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:center;padding:48px">
+    <div style="{{ slotWrapStyle }}height:320px">
+      <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="about-photo" style="width:100%;height:100%" shape="rounded" radius="16" placeholder="Drop a shop or barber photo" hint-size="100%,320px"></x-import>
+    </div>
+    <div>
+      <div style="font-family:'Anton',sans-serif;font-size:28px;margin-bottom:16px;letter-spacing:.01em;color:{{ themeText }}">ABOUT THE SHOP</div>
+      <p style="line-height:1.75;font-size:15px;margin:0;color:{{ themeTextMuted }}">Ray's been cutting hair in the same chair for twelve years. One barber, one standard — no rushed lines, no small talk you didn't ask for. Walk in for a trim, walk out looking like you meant to.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding:20px 24px 90px;max-width:1080px;margin:0 auto">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:26px;flex-wrap:wrap;gap:10px">
+    <div style="font-family:'Anton',sans-serif;font-size:28px;letter-spacing:.01em;color:{{ themeText }}">FRESH CUTS</div>
+    <a href="https://instagram.com/rayzbarbers" target="_blank" rel="noopener" style="color:#C99A3C;font-size:14px;text-decoration:none;font-weight:600">@rayzbarbers ↗</a>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px">
+    <div style="{{ slotWrapStyle }}aspect-ratio:9/16">
+      <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="reel-1" style="width:100%;height:100%" shape="rounded" radius="14" placeholder="Drop reel — @rayzbarbers" hint-size="100%,220px"></x-import>
+    </div>
+    <div style="{{ slotWrapStyle }}aspect-ratio:9/16">
+      <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="reel-2" style="width:100%;height:100%" shape="rounded" radius="14" placeholder="Drop reel — @rayzbarbers" hint-size="100%,220px"></x-import>
+    </div>
+    <div style="{{ slotWrapStyle }}aspect-ratio:9/16">
+      <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="reel-3" style="width:100%;height:100%" shape="rounded" radius="14" placeholder="Drop reel — @rayzbarbers" hint-size="100%,220px"></x-import>
+    </div>
+    <div style="{{ slotWrapStyle }}aspect-ratio:9/16">
+      <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="reel-4" style="width:100%;height:100%" shape="rounded" radius="14" placeholder="Drop reel — @rayzbarbers" hint-size="100%,220px"></x-import>
+    </div>
+    <div style="{{ slotWrapStyle }}aspect-ratio:9/16">
+      <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="reel-5" style="width:100%;height:100%" shape="rounded" radius="14" placeholder="Drop reel — @rayzbarbers" hint-size="100%,220px"></x-import>
+    </div>
+  </div>
+</section>
+
+<section style="padding:20px 24px 90px;max-width:1080px;margin:0 auto">
+  <div style="{{ panelStyle }}display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;padding:48px">
+    <div>
+      <div style="font-family:'Anton',sans-serif;font-size:28px;margin-bottom:20px;letter-spacing:.01em;color:{{ themeText }}">FIND US</div>
+      <div style="font-size:15px;line-height:1.6;margin-bottom:22px;color:{{ themeTextMuted }}">142 Ludlow Street<br>New York, NY 10002</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="{{ hoursRowStyle }}"><span>Mon – Fri</span><span>10am – 8pm</span></div>
+        <div style="{{ hoursRowStyle }}"><span>Saturday</span><span>9am – 6pm</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;color:{{ themeTextFaint }}"><span>Sunday</span><span>Closed</span></div>
+      </div>
+    </div>
+    <div style="{{ slotWrapStyle }}height:260px">
+      <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="map-slot" style="width:100%;height:100%" shape="rounded" radius="16" placeholder="Drop a map screenshot" hint-size="100%,260px"></x-import>
+    </div>
+  </div>
+</section>
+
+<footer style="padding:50px 24px 140px;text-align:center;border-top:1px solid;border-color:{{ themeBorder }};max-width:1080px;margin:0 auto">
+  <div style="font-family:'Anton',sans-serif;font-size:22px;margin-bottom:18px;letter-spacing:.02em;color:{{ themeText }}">RAYZ BARBERS</div>
+  <div style="display:flex;justify-content:center;gap:14px;margin-bottom:22px;flex-wrap:wrap">
+    <a href="tel:+12125550134" style="{{ footerIconStyle }}">☎</a>
+    <a href="https://instagram.com/rayzbarbers" target="_blank" rel="noopener" style="{{ footerIconStyle }}">IG</a>
+    <a href="https://wa.me/12125550134" target="_blank" rel="noopener" style="{{ footerIconStyle }}">WA</a>
+  </div>
+  <div style="font-size:12px;color:{{ themeTextFaint }}">© 2026 Rayz Barbers</div>
+</footer>
+
+</div>
+</sc-if>
+
+<sc-if value="{{ isAdminView }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:100vh;display:flex;font-family:'Work Sans',sans-serif;background:{{ adminMainBg }}">
+
+  <aside style="width:220px;flex:none;background:#0d0d0d;padding:30px 16px;display:flex;flex-direction:column;gap:4px">
+    <div style="font-family:'Anton',sans-serif;color:#C99A3C;font-size:22px;margin:2px 0 26px;letter-spacing:.02em">RAYZ</div>
+    <button onClick="{{ showPendingTab }}" style="{{ pendingNavStyle }}">
+      <span>Pending</span>
+      <span style="{{ pendingBadgeStyle }}">{{ pendingCount }}</span>
+    </button>
+    <button onClick="{{ showUpcomingTab }}" style="{{ upcomingNavStyle }}">Upcoming</button>
+    <button onClick="{{ showCalendarTab }}" style="{{ calendarNavStyle }}">Calendar</button>
+    <button onClick="{{ showServicesTab }}" style="{{ servicesNavStyle }}">Services &amp; Pricing</button>
+  </aside>
+
+  <main style="flex:1;padding:40px 44px;max-width:820px;overflow:visible">
+    <div style="font-family:'Anton',sans-serif;font-size:26px;margin-bottom:6px;letter-spacing:.01em;color:{{ themeText }}">{{ adminHeading }}</div>
+    <div style="font-size:14px;margin-bottom:32px;color:{{ themeTextMuted }}">{{ adminSubheading }}</div>
+
+    <sc-if value="{{ isPendingTab }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ pendingRequests }}" as="req" hint-placeholder-count="2">
+          <div style="{{ req.cardStyle }}">
+            <div>
+              <div style="{{ req.nameStyle }}">{{ req.name }}</div>
+              <div style="font-size:13px;color:{{ themeTextMuted }}">{{ req.service }} · {{ req.date }}, {{ req.time }}</div>
+              <div style="{{ req.paymentTagStyle }}">{{ req.paymentLabel }}</div>
+            </div>
+            <div style="display:flex;gap:8px;flex:none">
+              <button onClick="{{ req.approveHandler }}" style="background:#C99A3C;color:#0d0d0d;border:none;padding:9px 16px;border-radius:999px;font:700 13px 'Work Sans';cursor:pointer">Approve</button>
+              <button onClick="{{ req.declineHandler }}" style="{{ declineBtnStyle }}">Decline</button>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noPending }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ emptyStateStyle }}">All caught up — no pending requests.</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isUpcomingTab }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ upcomingBookings }}" as="bk" hint-placeholder-count="2">
+          <div style="{{ bk.cardStyle }}">
+            <div>
+              <div style="{{ bk.nameStyle }}">{{ bk.name }}</div>
+              <div style="font-size:13px;color:{{ themeTextMuted }}">{{ bk.service }} · {{ bk.date }}, {{ bk.time }}</div>
+              <div style="{{ bk.paymentTagStyle }}">{{ bk.paymentLabel }}</div>
+            </div>
+            <div style="background:rgba(60,150,90,.14);color:#3f9463;font:700 12px 'Work Sans';padding:6px 14px;border-radius:999px">Confirmed</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCalendarTab }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ calendarPanelStyle }}">
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;min-width:560px">
+          <div style="{{ calDayLabelStyle }}">Mon</div>
+          <div style="{{ calDayLabelStyle }}">Tue</div>
+          <div style="{{ calDayLabelStyle }}">Wed</div>
+          <div style="{{ calDayLabelStyle }}">Thu</div>
+          <div style="{{ calDayLabelStyle }}">Fri</div>
+          <div style="{{ calDayLabelStyle }}">Sat</div>
+          <div style="{{ calDayLabelStyle }}">Sun</div>
+          <sc-for list="{{ calendarCells }}" as="cell" hint-placeholder-count="35">
+            <div onClick="{{ cell.clickHandler }}" style="{{ cell.style }}"></div>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:16px;font-size:12px;color:{{ themeTextMuted }}">
+          <span>■ booked</span>
+          <span style="color:#C99A3C">■ pending — click to review</span>
+          <span>□ open</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isServicesTab }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ adminServices }}" as="svc" hint-placeholder-count="3">
+          <div style="{{ svc.rowStyle }}">
+            <div>
+              <div style="{{ svc.nameStyle }}">{{ svc.name }}</div>
+              <div style="font-size:13px;color:{{ themeTextMuted }}">{{ svc.durationLabel }}</div>
+            </div>
+            <sc-if value="{{ svc.isEditing }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="{{ priceInputWrapStyle }}">
+                  <span style="color:{{ themeTextMuted }};font-size:14px">£</span>
+                  <input value="{{ priceDraft }}" onChange="{{ onPriceDraftChange }}" onKeyDown="{{ onPriceDraftKeyDown }}" style="{{ priceInputStyle }}"/>
+                </div>
+                <button onClick="{{ svc.saveHandler }}" style="background:#C99A3C;color:#0d0d0d;border:none;width:32px;height:32px;border-radius:8px;cursor:pointer;font-weight:700">✓</button>
+                <button onClick="{{ cancelEditPrice }}" style="{{ cancelBtnStyle }}">✕</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ svc.isNotEditing }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="font:800 17px 'Work Sans';color:#C99A3C">{{ svc.priceLabel }}</div>
+                <button onClick="{{ svc.editHandler }}" style="{{ cancelBtnStyle }}">✎</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+  </main>
+</div>
+</sc-if>
+
+<div style="position:fixed;left:0;right:0;bottom:0;z-index:300;padding:16px 24px;backdrop-filter:blur(16px);border-top:1px solid;display:flex;align-items:center;justify-content:space-between;max-width:1080px;margin:0 auto;transition:transform .4s cubic-bezier(.16,1,.3,1),opacity .3s ease,background .3s ease,border-color .3s ease;transform:{{ stickyBarTransform }};opacity:{{ stickyBarOpacity }};background:{{ stickyBarBg }};border-color:{{ themeBorder }}">
+  <div style="font-family:'Anton',sans-serif;font-size:16px;letter-spacing:.02em;color:{{ themeText }}">RAYZ BARBERS</div>
+  <button onClick="{{ openBookingGeneric }}" style="background:#C99A3C;color:#0d0d0d;border:none;padding:11px 26px;border-radius:999px;font:700 14px 'Work Sans';cursor:pointer">Book Now</button>
+</div>
+
+<div style="position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;opacity:{{ overlayOpacity }};pointer-events:{{ overlayPointerEvents }}">
+  <div onClick="{{ closeBooking }}" style="position:absolute;inset:0;background:rgba(8,8,8,.6);backdrop-filter:blur(8px)"></div>
+  <div style="{{ modalStyle }}">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:22px 22px 6px;flex:none">
+      <sc-if value="{{ canGoBack }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ goBack }}" style="{{ roundBtnStyle }}">‹</button>
+      </sc-if>
+      <sc-if value="{{ cannotGoBack }}" hint-placeholder-val="{{ true }}">
+        <div style="width:34px;height:34px"></div>
+      </sc-if>
+      <div style="font:700 15px 'Oswald';letter-spacing:.01em;color:{{ themeText }}">{{ stepTitle }}</div>
+      <button onClick="{{ closeBooking }}" style="{{ roundBtnStyle }}">✕</button>
+    </div>
+
+    <div style="display:flex;gap:6px;justify-content:center;padding:10px 18px 20px;flex:none">
+      <div style="{{ dotStyle0 }}"></div>
+      <div style="{{ dotStyle1 }}"></div>
+      <div style="{{ dotStyle2 }}"></div>
+      <div style="{{ dotStyle3 }}"></div>
+      <div style="{{ dotStyle4 }}"></div>
+    </div>
+
+    <div style="flex:1;overflow:hidden;position:relative;min-height:0">
+      <div style="display:flex;width:500%;height:100%;transition:transform .45s cubic-bezier(.65,0,.35,1);transform:translateX(-{{ bookingStepShift }}%)">
+
+        <div style="width:20%;flex:none;height:100%;overflow-y:auto;padding:4px 24px 28px">
+          <div style="font-size:13px;margin-bottom:14px;color:{{ themeTextMuted }}">Choose a service to get started</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ landingServices }}" as="svc" hint-placeholder-count="3">
+              <div onClick="{{ svc.selectHandler }}" style="{{ svc.pickerCardStyle }}">
+                <div>
+                  <div style="{{ svc.pickerNameStyle }}">{{ svc.name }}</div>
+                  <div style="font-size:12px;margin-top:2px;color:{{ themeTextFaint }}">{{ svc.durationLabel }}</div>
+                </div>
+                <div style="font:800 16px 'Work Sans';color:#C99A3C">{{ svc.priceLabel }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="width:20%;flex:none;height:100%;overflow-y:auto;padding:4px 24px 28px;display:flex;flex-direction:column;gap:16px">
+          <div>
+            <div style="font-size:13px;margin-bottom:10px;color:{{ themeTextMuted }}">Pick a day</div>
+            <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">
+              <sc-for list="{{ dayOptions }}" as="day" hint-placeholder-count="6">
+                <div onClick="{{ day.selectHandler }}" style="{{ day.chipStyle }}">{{ day.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13px;margin-bottom:10px;color:{{ themeTextMuted }}">Pick a time</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+              <sc-for list="{{ timeOptions }}" as="t" hint-placeholder-count="7">
+                <div onClick="{{ t.selectHandler }}" style="{{ t.chipStyle }}">{{ t.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <button onClick="{{ goNext }}" disabled="{{ dateTimeIncomplete }}" style="{{ dateTimeContinueStyle }}">Continue</button>
+        </div>
+
+        <div style="width:20%;flex:none;height:100%;overflow-y:auto;padding:4px 24px 28px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:13px;margin-bottom:2px;color:{{ themeTextMuted }}">How would you like to pay?</div>
+          <div onClick="{{ selectPaymentOnline }}" style="{{ onlineCardStyle }}">
+            <div style="font-size:20px">💳</div>
+            <div>
+              <div style="font:700 15px 'Work Sans';color:{{ themeText }}">Pay Online</div>
+              <div style="font-size:12px;color:{{ themeTextFaint }}">Charged only once Ray approves</div>
+            </div>
+          </div>
+          <div onClick="{{ selectPaymentCash }}" style="{{ cashCardStyle }}">
+            <div style="font-size:20px">💵</div>
+            <div>
+              <div style="font:700 15px 'Work Sans';color:{{ themeText }}">Pay Cash</div>
+              <div style="font-size:12px;color:{{ themeTextFaint }}">Pay in person after your cut</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="width:20%;flex:none;height:100%;overflow-y:auto;padding:4px 24px 28px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:13px;color:{{ themeTextMuted }}">Your details</div>
+          <input value="{{ contactName }}" onChange="{{ onNameChange }}" placeholder="Full name" style="{{ inputStyle }}"/>
+          <input value="{{ contactPhone }}" onChange="{{ onPhoneChange }}" placeholder="Phone number" style="{{ inputStyle }}"/>
+          <input value="{{ contactEmail }}" onChange="{{ onEmailChange }}" placeholder="Email (optional)" style="{{ inputStyle }}"/>
+          <div style="{{ reviewBoxStyle }}">{{ reviewSummary }}</div>
+          <button onClick="{{ submitBooking }}" disabled="{{ detailsIncomplete }}" style="{{ submitButtonStyle }}">Send Request</button>
+        </div>
+
+        <div style="width:20%;flex:none;height:100%;overflow-y:auto;padding:24px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px">
+          <sc-if value="{{ isSubmitting }}" hint-placeholder-val="{{ false }}">
+            <div style="width:40px;height:40px;border-radius:50%;border:3px solid rgba(150,150,150,.25);border-top-color:#C99A3C;animation:rz-spin .8s linear infinite"></div>
+            <div style="font-size:14px;color:{{ themeTextMuted }}">Sending your request…</div>
+          </sc-if>
+          <sc-if value="{{ isSubmitted }}" hint-placeholder-val="{{ false }}">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="30" fill="none" stroke="#C99A3C" stroke-width="3"/>
+              <path d="M18 33l9 9 19-19" fill="none" stroke="#C99A3C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:40;stroke-dashoffset:40;animation:rz-check-draw .5s ease .15s forwards"/>
+            </svg>
+            <div style="font:700 20px 'Work Sans';color:{{ themeText }}">Request Sent!</div>
+            <div style="{{ pendingPillStyle }}">Pending Approval</div>
+            <div style="font-size:13px;max-width:220px;line-height:1.6;color:{{ themeTextFaint }}">You'll get a notification the moment Ray approves your slot.</div>
+            <button onClick="{{ closeBooking }}" style="margin-top:10px;background:#C99A3C;color:#0d0d0d;border:none;padding:12px 30px;border-radius:999px;font:700 14px 'Work Sans';cursor:pointer">Done</button>
+          </sc-if>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:12px 22px;border-radius:999px;font:600 13px 'Work Sans';z-index:1200;box-shadow:0 10px 30px rgba(0,0,0,.35);animation:rz-toast-in .3s ease">{{ toast }}</div>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    view: 'customer',
+    theme: 'dark',
+    showBooking: false,
+    bookingStep: 0,
+    selectedService: null,
+    selectedDate: null,
+    selectedTime: null,
+    paymentMethod: null,
+    contactName: '',
+    contactPhone: '',
+    contactEmail: '',
+    submitting: false,
+    submitted: false,
+    showStickyBar: false,
+    services: [
+      { id: 'skin-fade', name: 'Skin Fade', duration: 45, price: 35 },
+      { id: 'beard-trim', name: 'Beard Trim', duration: 20, price: 18 },
+      { id: 'cut-beard', name: 'Cut & Beard', duration: 60, price: 48 },
+    ],
+    adminTab: 'pending',
+    pendingRequests: [
+      { id: 1, name: 'Jordan K.', service: 'Skin Fade', date: 'Thu Jul 2', time: '2:30 PM', payment: 'online', removing: false },
+      { id: 2, name: 'Marcus T.', service: 'Cut & Beard', date: 'Fri Jul 3', time: '11:30 AM', payment: 'cash', removing: false },
+    ],
+    upcomingBookings: [
+      { id: 3, name: 'Priya S.', service: 'Beard Trim', date: 'Sat Jul 4', time: '9:00 AM', payment: 'cash' },
+      { id: 4, name: 'Alex R.', service: 'Skin Fade', date: 'Sat Jul 4', time: '1:00 PM', payment: 'online' },
+    ],
+    editingServiceId: null,
+    priceDraft: '',
+    toast: null,
+    nextId: 5,
+  };
+
+  componentDidMount() {
+    this._onScroll = () => {
+      const show = window.scrollY > window.innerHeight * 0.65;
+      if (show !== this.state.showStickyBar) this.setState({ showStickyBar: show });
+    };
+    window.addEventListener('scroll', this._onScroll);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+    clearTimeout(this._toastTimer);
+  }
+
+  showToast(msg) {
+    clearTimeout(this._toastTimer);
+    this.setState({ toast: msg });
+    this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2600);
+  }
+
+  switchView(v) { this.setState({ view: v }); }
+  setTheme(t) { this.setState({ theme: t }); }
+
+  resetBookingFields() {
+    this.setState({
+      bookingStep: 0, selectedService: null, selectedDate: null, selectedTime: null,
+      paymentMethod: null, contactName: '', contactPhone: '', contactEmail: '',
+      submitting: false, submitted: false,
+    });
+  }
+
+  openBooking(serviceId) {
+    this.resetBookingFields();
+    if (serviceId) this.setState({ showBooking: true, selectedService: serviceId, bookingStep: 1 });
+    else this.setState({ showBooking: true });
+  }
+
+  closeBooking() {
+    this.setState({ showBooking: false });
+    setTimeout(() => this.resetBookingFields(), 450);
+  }
+
+  goNext() { this.setState(s => ({ bookingStep: Math.min(4, s.bookingStep + 1) })); }
+  goBack() { this.setState(s => ({ bookingStep: Math.max(0, s.bookingStep - 1) })); }
+
+  selectService(id) {
+    this.setState({ selectedService: id });
+    setTimeout(() => this.goNext(), 300);
+  }
+  selectDate(label) { this.setState({ selectedDate: label }); }
+  selectTime(label) { this.setState({ selectedTime: label }); }
+  selectPayment(method) {
+    this.setState({ paymentMethod: method });
+    setTimeout(() => this.goNext(), 300);
+  }
+
+  submitBooking() {
+    const s = this.state;
+    if (!s.contactName.trim() || !s.contactPhone.trim()) return;
+    this.setState({ submitting: true });
+    setTimeout(() => {
+      const svc = s.services.find(x => x.id === s.selectedService);
+      const newReq = {
+        id: s.nextId,
+        name: s.contactName.trim(),
+        service: svc ? svc.name : 'Service',
+        date: s.selectedDate || 'TBD',
+        time: s.selectedTime || 'TBD',
+        payment: s.paymentMethod || 'cash',
+        removing: false,
+      };
+      this.setState(prev => ({
+        submitting: false, submitted: true,
+        pendingRequests: [newReq, ...prev.pendingRequests],
+        nextId: prev.nextId + 1,
+      }));
+    }, 950);
+  }
+
+  approveRequest(id) {
+    this.setState(s => ({ pendingRequests: s.pendingRequests.map(r => r.id === id ? { ...r, removing: true } : r) }));
+    setTimeout(() => {
+      this.setState(s => {
+        const req = s.pendingRequests.find(r => r.id === id);
+        if (!req) return null;
+        return {
+          pendingRequests: s.pendingRequests.filter(r => r.id !== id),
+          upcomingBookings: [{ id: req.id, name: req.name, service: req.service, date: req.date, time: req.time, payment: req.payment }, ...s.upcomingBookings],
+        };
+      });
+      this.showToast('Approved — customer notified');
+    }, 320);
+  }
+  declineRequest(id) {
+    this.setState(s => ({ pendingRequests: s.pendingRequests.map(r => r.id === id ? { ...r, removing: true } : r) }));
+    setTimeout(() => {
+      this.setState(s => ({ pendingRequests: s.pendingRequests.filter(r => r.id !== id) }));
+      this.showToast('Declined — customer notified');
+    }, 320);
+  }
+
+  startEditPrice(id, currentPrice) { this.setState({ editingServiceId: id, priceDraft: String(currentPrice) }); }
+  cancelEditPrice() { this.setState({ editingServiceId: null }); }
+  savePrice(id) {
+    const val = parseFloat(this.state.priceDraft);
+    if (isNaN(val) || val <= 0) { this.setState({ editingServiceId: null }); return; }
+    this.setState(s => ({
+      services: s.services.map(x => x.id === id ? { ...x, price: val } : x),
+      editingServiceId: null,
+    }));
+    this.showToast('Price updated');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const isCustomerView = s.view === 'customer';
+    const isAdminView = s.view === 'admin';
+    const isDark = s.theme === 'dark';
+
+    const theme = {
+      bg: isDark ? '#0d0d0d' : '#faf7f2',
+      panelBg: isDark ? '#161616' : '#ffffff',
+      panelBg2: isDark ? '#121212' : '#f3ede1',
+      text: isDark ? '#ffffff' : '#18140f',
+      textMuted: isDark ? 'rgba(255,255,255,.6)' : 'rgba(24,20,15,.62)',
+      textFaint: isDark ? 'rgba(255,255,255,.38)' : 'rgba(24,20,15,.42)',
+      border: isDark ? 'rgba(255,255,255,.1)' : 'rgba(24,20,15,.1)',
+      cardBg: isDark ? '#161616' : '#ffffff',
+      inputBg: isDark ? 'rgba(255,255,255,.06)' : 'rgba(24,20,15,.04)',
+      inputBorder: isDark ? 'rgba(255,255,255,.14)' : 'rgba(24,20,15,.14)',
+      chipBg: isDark ? 'rgba(255,255,255,.05)' : 'rgba(24,20,15,.035)',
+      chipBorder: isDark ? 'rgba(255,255,255,.12)' : 'rgba(24,20,15,.14)',
+      slotBg: isDark ? '#f2ede2' : '#efe9db',
+    };
+
+    const pillActive = 'background:#C99A3C;color:#0d0d0d;border:none;padding:8px 16px;border-radius:999px;font:700 12px \'Work Sans\';cursor:pointer';
+    const pillInactive = `background:transparent;color:${isDark ? 'rgba(255,255,255,.55)' : 'rgba(24,20,15,.55)'};border:none;padding:8px 16px;border-radius:999px;font:600 12px 'Work Sans';cursor:pointer`;
+
+    const iconKind = (id) => id === 'skin-fade' ? 'fade' : id === 'beard-trim' ? 'beard' : 'scissors';
+
+    const landingServices = s.services.map(svc => {
+      const isSelected = s.selectedService === svc.id;
+      const kind = iconKind(svc.id);
+      return {
+        ...svc,
+        priceLabel: '£' + svc.price,
+        durationLabel: svc.duration + ' min',
+        isFade: kind === 'fade', isBeard: kind === 'beard', isScissors: kind === 'scissors',
+        bookHandler: () => this.openBooking(svc.id),
+        selectHandler: () => this.selectService(svc.id),
+        cardStyle: `background:${theme.panelBg};border:1px solid ${theme.border};border-radius:18px;padding:28px;display:flex;flex-direction:column;gap:14px;`,
+        iconWrapStyle: `width:46px;height:46px;border-radius:13px;background:rgba(201,154,60,.13);display:flex;align-items:center;justify-content:center;color:#C99A3C`,
+        nameStyle: `font:600 21px 'Oswald';letter-spacing:.01em;color:${theme.text}`,
+        footRowStyle: `display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:14px;border-top:1px solid ${theme.border}`,
+        bookBtnStyle: `background:transparent;border:1.5px solid ${theme.border};color:${theme.textMuted};padding:9px 20px;border-radius:999px;font:600 13px 'Work Sans';cursor:pointer;`,
+        pickerNameStyle: `font:600 15px 'Oswald';color:${theme.text}`,
+        pickerCardStyle: `display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-radius:12px;cursor:pointer;border:1.5px solid ${isSelected ? '#C99A3C' : theme.chipBorder};background:${isSelected ? 'rgba(201,154,60,.1)' : theme.chipBg}`,
+      };
+    });
+
+    const adminServices = s.services.map(svc => {
+      const isEditing = s.editingServiceId === svc.id;
+      return {
+        ...svc,
+        priceLabel: '£' + svc.price,
+        durationLabel: svc.duration + ' min',
+        isEditing, isNotEditing: !isEditing,
+        nameStyle: `font:600 16px 'Oswald';color:${theme.text}`,
+        rowStyle: `background:${theme.panelBg};border:1px solid ${theme.border};border-radius:14px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;`,
+        editHandler: () => this.startEditPrice(svc.id, svc.price),
+        saveHandler: () => this.savePrice(svc.id),
+      };
+    });
+
+    const today = new Date(2026, 6, 1);
+    const dowNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const dayOptions = [];
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(today); d.setDate(today.getDate() + i);
+      const label = `${dowNames[d.getDay()]} ${d.getDate()}`;
+      const isSelected = s.selectedDate === label;
+      dayOptions.push({
+        label, selectHandler: () => this.selectDate(label),
+        chipStyle: `flex:none;padding:10px 14px;border-radius:12px;font:600 13px 'Work Sans';cursor:pointer;text-align:center;border:1.5px solid ${isSelected ? '#C99A3C' : theme.chipBorder};background:${isSelected ? '#C99A3C' : theme.chipBg};color:${isSelected ? '#0d0d0d' : theme.text}`,
+      });
+    }
+    const allTimes = ['9:00 AM','10:00 AM','11:30 AM','1:00 PM','2:30 PM','4:00 PM','5:30 PM'];
+    const bookedTimes = ['11:30 AM', '4:00 PM'];
+    const timeOptions = allTimes.map(label => {
+      const isBooked = bookedTimes.includes(label);
+      const isSelected = s.selectedTime === label;
+      let style = 'padding:10px 4px;border-radius:10px;font:600 12px \'Work Sans\';cursor:pointer;text-align:center;border:1.5px solid ';
+      if (isBooked) style += `${theme.border};background:transparent;color:${theme.textFaint};cursor:not-allowed;opacity:.5`;
+      else if (isSelected) style += `#C99A3C;background:#C99A3C;color:#0d0d0d`;
+      else style += `${theme.chipBorder};background:${theme.chipBg};color:${theme.text}`;
+      return { label, chipStyle: style, selectHandler: isBooked ? () => {} : () => this.selectTime(label) };
+    });
+
+    const dateTimeIncomplete = !(s.selectedDate && s.selectedTime);
+    const dateTimeContinueStyle = `margin-top:auto;border:none;border-radius:12px;padding:14px;font:700 14px 'Work Sans';cursor:${dateTimeIncomplete ? 'not-allowed' : 'pointer'};background:${dateTimeIncomplete ? theme.chipBg : '#C99A3C'};color:${dateTimeIncomplete ? theme.textFaint : '#0d0d0d'}`;
+
+    const onlineCardStyle = `display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;cursor:pointer;border:1.5px solid ${s.paymentMethod === 'online' ? '#C99A3C' : theme.chipBorder};background:${s.paymentMethod === 'online' ? 'rgba(201,154,60,.1)' : theme.chipBg}`;
+    const cashCardStyle = `display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;cursor:pointer;border:1.5px solid ${s.paymentMethod === 'cash' ? '#C99A3C' : theme.chipBorder};background:${s.paymentMethod === 'cash' ? 'rgba(201,154,60,.1)' : theme.chipBg}`;
+
+    const svcName = (s.services.find(x => x.id === s.selectedService) || {}).name || 'Service';
+    const paymentLabel = s.paymentMethod === 'online' ? 'Pay Online' : s.paymentMethod === 'cash' ? 'Pay Cash' : '—';
+    const reviewSummary = `${svcName} · ${s.selectedDate || 'no date'} · ${s.selectedTime || 'no time'} · ${paymentLabel}`;
+
+    const detailsIncomplete = !(s.contactName.trim() && s.contactPhone.trim());
+    const submitButtonStyle = `border:none;border-radius:999px;padding:15px;font:700 14px 'Work Sans';cursor:${detailsIncomplete ? 'not-allowed' : 'pointer'};background:${detailsIncomplete ? theme.chipBg : '#C99A3C'};color:${detailsIncomplete ? theme.textFaint : '#0d0d0d'}`;
+
+    const stepTitles = ['Select a Service', 'Date & Time', 'Payment', 'Your Details', 'Booking Request'];
+    const dotStyleFor = (i) => `width:${i === s.bookingStep ? '18px' : '6px'};height:6px;border-radius:3px;background:${i <= s.bookingStep ? '#C99A3C' : theme.border}`;
+
+    const navBtn = (active) => `display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 14px;border-radius:10px;border:none;font:600 13px 'Work Sans';cursor:pointer;text-align:left;margin-bottom:2px;background:${active ? 'rgba(201,154,60,.15)' : 'transparent'};color:${active ? '#C99A3C' : 'rgba(255,255,255,.6)'}`;
+
+    const cardBaseStyle = (removing) => `background:${theme.panelBg};border:1px solid ${theme.border};border-radius:14px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;opacity:${removing ? 0 : 1};transform:${removing ? 'translateX(30px) scale(.97)' : 'none'}`;
+    const nameStyleFor = `font:600 15px 'Oswald';margin-bottom:3px;color:${theme.text}`;
+
+    const pendingCards = s.pendingRequests.map(req => ({
+      ...req,
+      paymentLabel: req.payment === 'online' ? 'Paid online' : 'Pays cash',
+      paymentTagStyle: `display:inline-block;margin-top:6px;font:600 11px 'Work Sans';padding:3px 9px;border-radius:999px;background:${req.payment === 'online' ? 'rgba(59,130,246,.14)' : theme.chipBg};color:${req.payment === 'online' ? '#4f8ff0' : theme.textMuted}`,
+      cardStyle: cardBaseStyle(req.removing),
+      nameStyle: nameStyleFor,
+      approveHandler: () => this.approveRequest(req.id),
+      declineHandler: () => this.declineRequest(req.id),
+    }));
+    const upcomingCards = s.upcomingBookings.map(bk => ({
+      ...bk,
+      paymentLabel: bk.payment === 'online' ? 'Paid online' : 'Pays cash',
+      paymentTagStyle: `display:inline-block;margin-top:6px;font:600 11px 'Work Sans';padding:3px 9px;border-radius:999px;background:${bk.payment === 'online' ? 'rgba(59,130,246,.14)' : theme.chipBg};color:${bk.payment === 'online' ? '#4f8ff0' : theme.textMuted}`,
+      cardStyle: `background:${theme.panelBg};border:1px solid ${theme.border};border-radius:14px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between`,
+      nameStyle: nameStyleFor,
+    }));
+
+    const bookedSet = new Set([1,3,8,9,14,20,23,28,30]);
+    const pendingSet = new Set([5,11,17,25]);
+    const calendarCells = [];
+    for (let i = 0; i < 35; i++) {
+      const isBooked = bookedSet.has(i);
+      const isPending = pendingSet.has(i);
+      let bg = theme.chipBg;
+      if (isBooked) bg = isDark ? 'rgba(255,255,255,.3)' : '#18140f';
+      if (isPending) bg = 'transparent';
+      calendarCells.push({
+        style: `height:20px;border-radius:4px;background:${bg};border:${isPending ? '2px solid #C99A3C' : 'none'};cursor:${isPending ? 'pointer' : 'default'}`,
+        clickHandler: isPending ? () => this.setState({ adminTab: 'pending' }) : () => {},
+      });
+    }
+
+    const modalStyle = `position:relative;transform:${s.showBooking ? 'translateY(0) scale(1)' : 'translateY(40px) scale(.95)'};width:420px;max-width:92vw;max-height:88vh;border-radius:28px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.5);background:${theme.panelBg};display:flex;flex-direction:column`;
+    const roundBtnStyle = `width:34px;height:34px;border-radius:50%;background:${theme.chipBg};border:none;color:${theme.text};font-size:16px;cursor:pointer`;
+    const inputStyleStr = `background:${theme.inputBg};border:1px solid ${theme.inputBorder};border-radius:10px;padding:13px 14px;color:${theme.text};font:14px 'Work Sans';outline:none`;
+
+    return {
+      isCustomerView, isAdminView,
+      showCustomerView: () => this.switchView('customer'),
+      showAdminView: () => this.switchView('admin'),
+      customerTabStyle: isCustomerView ? pillActive : pillInactive,
+      adminTabBtnStyle: isAdminView ? pillActive : pillInactive,
+      setLightTheme: () => this.setTheme('light'),
+      setDarkTheme: () => this.setTheme('dark'),
+      lightThemeBtnStyle: !isDark ? pillActive : pillInactive,
+      darkThemeBtnStyle: isDark ? pillActive : pillInactive,
+
+      themeBg: theme.bg, themeText: theme.text, themeTextMuted: theme.textMuted, themeTextFaint: theme.textFaint, themeBorder: theme.border,
+      heroBackground: isDark
+        ? `radial-gradient(ellipse 70% 50% at 50% 15%, rgba(201,154,60,.16), transparent 65%),#0d0d0d`
+        : `radial-gradient(ellipse 70% 50% at 50% 15%, rgba(201,154,60,.22), transparent 65%),#faf7f2`,
+      panelStyle: `background:${theme.panelBg2};border-radius:26px;`,
+      slotWrapStyle: `width:100%;border-radius:16px;overflow:hidden;background:${theme.slotBg};`,
+      hoursRowStyle: `display:flex;justify-content:space-between;font-size:14px;border-bottom:1px solid ${theme.border};padding-bottom:8px;,border-color .3s ease;color:${theme.textMuted}`,
+      footerIconStyle: `width:42px;height:42px;border-radius:50%;border:1px solid ${theme.border};display:flex;align-items:center;justify-content:center;color:${theme.textMuted};text-decoration:none;font-size:14px;`,
+
+      adminMainBg: isDark ? '#161616' : '#f3f1ec',
+      declineBtnStyle: `background:transparent;color:${theme.textMuted};border:1.5px solid ${theme.border};padding:9px 16px;border-radius:999px;font:600 13px 'Work Sans';cursor:pointer`,
+      emptyStateStyle: `padding:40px;text-align:center;color:${theme.textFaint};font-size:14px;background:${theme.panelBg};border-radius:16px;border:1px solid ${theme.border}`,
+      calendarPanelStyle: `background:${theme.panelBg};border:1px solid ${theme.border};border-radius:16px;padding:22px;overflow:auto`,
+      calDayLabelStyle: `font:600 12px 'Work Sans';color:${theme.textFaint};text-align:center;padding-bottom:4px`,
+      priceInputWrapStyle: `display:flex;align-items:center;gap:2px;border:1.5px solid #C99A3C;border-radius:8px;padding:6px 10px`,
+      priceInputStyle: `width:52px;border:none;outline:none;font:700 14px 'Work Sans';background:transparent;color:${theme.text}`,
+      cancelBtnStyle: `background:transparent;border:1.5px solid ${theme.border};color:${theme.textMuted};width:32px;height:32px;border-radius:8px;cursor:pointer`,
+
+      landingServices, adminServices,
+
+      openBookingGeneric: () => this.openBooking(null),
+      closeBooking: () => this.closeBooking(),
+      goNext: () => this.goNext(),
+      goBack: () => this.goBack(),
+      canGoBack: s.bookingStep > 0 && !s.submitting && !s.submitted,
+      cannotGoBack: !(s.bookingStep > 0 && !s.submitting && !s.submitted),
+      stepTitle: s.submitted ? '' : stepTitles[s.bookingStep],
+      bookingStepShift: s.bookingStep * 20,
+      dotStyle0: dotStyleFor(0), dotStyle1: dotStyleFor(1), dotStyle2: dotStyleFor(2), dotStyle3: dotStyleFor(3), dotStyle4: dotStyleFor(4),
+      modalStyle, roundBtnStyle, inputStyle: inputStyleStr,
+
+      dayOptions, timeOptions, dateTimeIncomplete, dateTimeContinueStyle,
+      selectPaymentOnline: () => this.selectPayment('online'),
+      selectPaymentCash: () => this.selectPayment('cash'),
+      onlineCardStyle, cashCardStyle,
+
+      contactName: s.contactName, contactPhone: s.contactPhone, contactEmail: s.contactEmail,
+      onNameChange: (e) => this.setState({ contactName: e.target.value }),
+      onPhoneChange: (e) => this.setState({ contactPhone: e.target.value }),
+      onEmailChange: (e) => this.setState({ contactEmail: e.target.value }),
+      reviewSummary, detailsIncomplete, submitButtonStyle,
+      reviewBoxStyle: `margin-top:8px;padding:14px;background:${theme.chipBg};border-radius:12px;font-size:13px;line-height:1.6;color:${theme.textMuted}`,
+      submitBooking: () => this.submitBooking(),
+
+      isSubmitting: s.submitting, isSubmitted: s.submitted,
+      pendingPillStyle: `background:${theme.chipBg};color:${theme.textMuted};font:600 12px 'Work Sans';padding:6px 16px;border-radius:999px`,
+
+      overlayOpacity: s.showBooking ? 1 : 0,
+      overlayPointerEvents: s.showBooking ? 'auto' : 'none',
+
+      stickyBarTransform: (s.showStickyBar && !s.showBooking) ? 'translateY(0)' : 'translateY(140%)',
+      stickyBarOpacity: (s.showStickyBar && !s.showBooking) ? 1 : 0,
+      stickyBarBg: isDark ? 'rgba(13,13,13,.88)' : 'rgba(250,247,242,.88)',
+
+      adminHeading: { pending: 'Pending Requests', upcoming: 'Upcoming Bookings', calendar: 'Calendar', services: 'Services & Pricing' }[s.adminTab],
+      adminSubheading: {
+        pending: 'New requests waiting on your approval',
+        upcoming: 'Confirmed appointments on the books',
+        calendar: 'A quick look at the week ahead',
+        services: 'Tap the pencil to update a price',
+      }[s.adminTab],
+      isPendingTab: s.adminTab === 'pending', isUpcomingTab: s.adminTab === 'upcoming',
+      isCalendarTab: s.adminTab === 'calendar', isServicesTab: s.adminTab === 'services',
+      showPendingTab: () => this.setState({ adminTab: 'pending' }),
+      showUpcomingTab: () => this.setState({ adminTab: 'upcoming' }),
+      showCalendarTab: () => this.setState({ adminTab: 'calendar' }),
+      showServicesTab: () => this.setState({ adminTab: 'services' }),
+      pendingNavStyle: navBtn(s.adminTab === 'pending'),
+      upcomingNavStyle: navBtn(s.adminTab === 'upcoming'),
+      calendarNavStyle: navBtn(s.adminTab === 'calendar'),
+      servicesNavStyle: navBtn(s.adminTab === 'services'),
+      pendingCount: s.pendingRequests.length,
+      pendingBadgeStyle: `background:#C99A3C;color:#0d0d0d;font:700 11px 'Work Sans';min-width:18px;height:18px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px`,
+
+      pendingRequests: pendingCards, upcomingBookings: upcomingCards, noPending: pendingCards.length === 0,
+      calendarCells,
+
+      priceDraft: s.priceDraft,
+      onPriceDraftChange: (e) => this.setState({ priceDraft: e.target.value }),
+      onPriceDraftKeyDown: (e) => { if (e.key === 'Enter') this.savePrice(s.editingServiceId); },
+      cancelEditPrice: () => this.cancelEditPrice(),
+
+      hasToast: !!s.toast, toast: s.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>
