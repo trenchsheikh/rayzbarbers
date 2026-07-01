@@ -17,16 +17,30 @@ export function fallbackServices(): Service[] {
 
 export async function listActiveServices(): Promise<Service[]> {
   if (!db) return fallbackServices();
-  const rows = await db
-    .select()
-    .from(services)
-    .where(eq(services.active, true))
-    .orderBy(asc(services.name));
-  return rows.length ? rows : fallbackServices();
+  try {
+    const rows = await db
+      .select()
+      .from(services)
+      .where(eq(services.active, true))
+      .orderBy(asc(services.name));
+    return rows.length ? rows : fallbackServices();
+  } catch (err) {
+    console.error("listActiveServices failed, using defaults:", err);
+    return fallbackServices();
+  }
 }
 
 export async function getServiceById(id: string): Promise<Service | undefined> {
   if (!db) return fallbackServices().find((s) => s.id === id);
-  const [row] = await db.select().from(services).where(eq(services.id, id)).limit(1);
-  return row ?? fallbackServices().find((s) => s.id === id);
+  try {
+    const [row] = await db
+      .select()
+      .from(services)
+      .where(eq(services.id, id))
+      .limit(1);
+    return row ?? fallbackServices().find((s) => s.id === id);
+  } catch (err) {
+    console.error("getServiceById failed, using defaults:", err);
+    return fallbackServices().find((s) => s.id === id);
+  }
 }
