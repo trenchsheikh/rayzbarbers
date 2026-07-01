@@ -4,6 +4,12 @@ import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import {
+  AdminMobileDrawer,
+  AdminMobileHeader,
+  AdminNavLinks,
+  type AdminTab,
+} from "@/components/admin/admin-nav";
 import { RayzLogo } from "@/components/rayz-logo";
 import { CalendarTab } from "@/components/admin/calendar-tab";
 import { UpcomingBookingsCalendar } from "@/components/admin/upcoming-bookings-calendar";
@@ -12,7 +18,7 @@ import { formatPrice, CURRENCY_SYMBOL } from "@/lib/shop";
 import type { CalendarDay } from "@/lib/availability";
 import { cn } from "@/lib/utils";
 
-type Tab = "pending" | "upcoming" | "calendar" | "services";
+type Tab = AdminTab;
 
 type BookingRow = Booking & { serviceName?: string };
 
@@ -51,6 +57,7 @@ export function AdminDashboard({ initialServices }: { initialServices: Service[]
   const [calendarLeadingBlanks, setCalendarLeadingBlanks] = useState(0);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [priceDraft, setPriceDraft] = useState("");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const enrich = useCallback(
     (rows: Booking[]): BookingRow[] =>
@@ -93,6 +100,24 @@ export function AdminDashboard({ initialServices }: { initialServices: Service[]
     const id = setInterval(loadBookings, 15000);
     return () => clearInterval(id);
   }, [loadBookings, loadCalendar]);
+
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileNavOpen(false);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [mobileNavOpen]);
+
+  const selectTab = (next: Tab) => {
+    setTab(next);
+    setMobileNavOpen(false);
+  };
 
   const approve = async (id: string) => {
     const res = await fetch(`/api/bookings/${id}/approve`, { method: "POST" });
@@ -150,70 +175,44 @@ export function AdminDashboard({ initialServices }: { initialServices: Service[]
     setCalendarMonth(month);
   };
 
-  const navBtn = (active: boolean) =>
-    cn(
-      "mb-0.5 flex w-full items-center justify-between rounded-lg px-3.5 py-2.5 text-left text-sm font-semibold",
-      active
-        ? "bg-rayz-gold/15 text-rayz-gold"
-        : "text-muted-foreground hover:text-foreground",
-    );
-
   return (
-    <div className="flex min-h-screen bg-background">
-      <aside className="flex min-h-screen w-56 shrink-0 flex-col gap-1 border-r border-border bg-rayz-panel p-4 pt-8">
+    <div className="flex min-h-screen flex-col bg-background lg:flex-row">
+      <AdminMobileHeader
+        tab={tab}
+        pendingCount={pending.length}
+        onOpenMenu={() => setMobileNavOpen(true)}
+      />
+
+      <AdminMobileDrawer
+        open={mobileNavOpen}
+        tab={tab}
+        pendingCount={pending.length}
+        onClose={() => setMobileNavOpen(false)}
+        onTabChange={selectTab}
+        onLogout={logout}
+      />
+
+      <aside className="hidden min-h-screen w-56 shrink-0 flex-col border-r border-border bg-rayz-panel p-4 pt-8 lg:flex">
         <RayzLogo size="md" className="mb-6" />
-        <button
-          type="button"
-          className={navBtn(tab === "pending")}
-          onClick={() => setTab("pending")}
-        >
-          <span>Pending</span>
-          {pending.length > 0 && (
-            <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-rayz-gold px-1 text-[11px] font-bold text-rayz-dark">
-              {pending.length}
-            </span>
-          )}
-        </button>
-        <button
-          type="button"
-          className={navBtn(tab === "upcoming")}
-          onClick={() => setTab("upcoming")}
-        >
-          Upcoming
-        </button>
-        <button
-          type="button"
-          className={navBtn(tab === "calendar")}
-          onClick={() => setTab("calendar")}
-        >
-          Calendar
-        </button>
-        <button
-          type="button"
-          className={navBtn(tab === "services")}
-          onClick={() => setTab("services")}
-        >
-          Services &amp; Pricing
-        </button>
-        <button
-          type="button"
-          onClick={logout}
-          className="mt-auto rounded-lg px-3.5 py-2.5 text-left text-sm font-semibold text-muted-foreground hover:text-foreground"
-        >
-          Sign out
-        </button>
+        <AdminNavLinks
+          tab={tab}
+          pendingCount={pending.length}
+          onTabChange={selectTab}
+          onLogout={logout}
+          className="flex min-h-0 flex-1 flex-col"
+        />
       </aside>
 
       <main
         className={cn(
-          "flex-1 overflow-visible p-8 md:p-10",
+          "mx-auto w-full flex-1 overflow-visible px-4 py-6 sm:px-6 md:p-10",
           tab === "upcoming" || tab === "calendar" ? "max-w-6xl" : "max-w-3xl",
         )}
       >
-        <h1 className="font-anton text-3xl tracking-wide">
+        <h1 className="font-anton text-2xl tracking-wide sm:text-3xl">
           {TAB_COPY[tab].heading}
         </h1>
-        <p className="mt-1 mb-8 text-sm text-muted-foreground">
+        <p className="mt-1 mb-6 text-sm text-muted-foreground sm:mb-8">
           {TAB_COPY[tab].sub}
         </p>
 
