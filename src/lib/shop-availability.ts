@@ -124,13 +124,18 @@ export function hasCustomPrices(
 export async function getShopAvailability(): Promise<ShopAvailability> {
   if (!db) return EMPTY_AVAILABILITY;
 
-  const rows = await requireDb()
-    .select()
-    .from(shopSettings)
-    .where(eq(shopSettings.key, AVAILABILITY_SETTINGS_KEY))
-    .limit(1);
+  try {
+    const rows = await requireDb()
+      .select()
+      .from(shopSettings)
+      .where(eq(shopSettings.key, AVAILABILITY_SETTINGS_KEY))
+      .limit(1);
 
-  return normalizeAvailability(migrateLegacy(rows[0]?.value));
+    return normalizeAvailability(migrateLegacy(rows[0]?.value));
+  } catch (err) {
+    console.error("getShopAvailability failed, using defaults:", err);
+    return EMPTY_AVAILABILITY;
+  }
 }
 
 export async function saveShopAvailability(settings: ShopAvailability) {

@@ -70,8 +70,10 @@ npm run dev
 1. Push repo to GitHub
 2. Import project in [Vercel](https://vercel.com)
 3. Add all env vars from `.env.local.example`
-4. Update Supabase auth redirect URLs to your production domain
-5. Point Stripe webhook to `https://your-domain.com/api/webhooks/stripe`
+4. **Important:** set `DATABASE_URL` to Supabase’s **Transaction pooler** URL (port `6543`, `?pgbouncer=true`). Do not use the direct `:5432` session URL on Vercel — it exhausts connections (`max clients reached in session mode`).
+5. Run `npm run db:push` and `npm run db:seed` once against the production database
+6. Update Supabase auth redirect URLs to your production domain
+7. Point Stripe webhook to `https://your-domain.com/api/webhooks/stripe`
 
 ## Project structure
 
