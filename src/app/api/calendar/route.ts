@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCalendarMonth } from "@/lib/availability";
-import { getAdminUser } from "@/lib/supabase/server";
+import { getAdminUser } from "@/lib/admin-auth";
 
 export async function GET(request: Request) {
   const user = await getAdminUser();

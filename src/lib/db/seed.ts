@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { requireDb } from "./index";
 import { services, shopSettings } from "./schema";
 import { DEFAULT_SERVICES, SHOP_INFO } from "../shop";
+import { EMPTY_AVAILABILITY } from "../shop-availability";
 
 async function seed() {
   const db = requireDb();
@@ -38,6 +39,14 @@ async function seed() {
       target: shopSettings.key,
       set: { value: SHOP_INFO },
     });
+
+  await db
+    .insert(shopSettings)
+    .values({
+      key: "availability",
+      value: EMPTY_AVAILABILITY,
+    })
+    .onConflictDoNothing();
 
   const existing = await db.select().from(services);
   console.log(`Seeded ${existing.length} services.`);

@@ -8,7 +8,7 @@ import {
 } from "@/lib/notifications";
 import { getServiceById } from "@/lib/services-data";
 import { capturePaymentIntent, cancelPaymentIntent } from "@/lib/stripe";
-import { getAdminUser } from "@/lib/supabase/server";
+import { getAdminUser } from "@/lib/admin-auth";
 
 type Params = { params: Promise<{ id: string }> };
 

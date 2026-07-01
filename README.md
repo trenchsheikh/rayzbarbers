@@ -7,7 +7,7 @@ Built from the Claude Design prototype in [`design/`](design/).
 ## Stack
 
 - **Next.js 16** (App Router) + TypeScript + Tailwind CSS v4
-- **Supabase** — Postgres + admin magic-link auth
+- **Supabase** — Postgres database
 - **Drizzle ORM** — schema & migrations
 - **Stripe** — manual-capture payments (charged on approve)
 - **Resend** — booking notification emails
@@ -35,14 +35,14 @@ npm run db:push
 npm run db:seed
 ```
 
-### 4. Supabase Auth
+### 4. Admin login
 
-In Supabase Dashboard → Authentication → URL configuration, add:
+Barber dashboard at `/admin/login` — default credentials:
 
-- Site URL: `http://localhost:3000`
-- Redirect URLs: `http://localhost:3000/admin`
+- **Username:** `ray`
+- **Password:** `pass`
 
-Enable Email provider. Set `ADMIN_ALLOWED_EMAILS` to the barber's email.
+Override with `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and set `ADMIN_SESSION_SECRET` in production.
 
 ### 5. Stripe
 

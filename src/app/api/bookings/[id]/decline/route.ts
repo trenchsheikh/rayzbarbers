@@ -5,7 +5,7 @@ import { bookings } from "@/lib/db/schema";
 import { sendBookingDeclined } from "@/lib/notifications";
 import { getServiceById } from "@/lib/services-data";
 import { cancelPaymentIntent } from "@/lib/stripe";
-import { getAdminUser } from "@/lib/supabase/server";
+import { getAdminUser } from "@/lib/admin-auth";
 
 type Params = { params: Promise<{ id: string }> };
 

@@ -1,7 +1,9 @@
 import { desc, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { format } from "date-fns";
 import { isSlotAvailable } from "@/lib/availability";
+import { getServicePriceForDate, getShopAvailability } from "@/lib/shop-availability";
 import { requireDb } from "@/lib/db";
 import { bookings } from "@/lib/db/schema";
 import {
@@ -9,7 +11,7 @@ import {
 } from "@/lib/notifications";
 import { getServiceById } from "@/lib/services-data";
 import { createManualCaptureIntent } from "@/lib/stripe";
-import { getAdminUser } from "@/lib/supabase/server";
+import { getAdminUser } from "@/lib/admin-auth";
 import { createBookingSchema } from "@/lib/validations";
 
 export async function GET(request: Request) {
@@ -48,12 +50,20 @@ export async function POST(request: Request) {
       );
     }
 
+    const settings = await getShopAvailability();
+    const priceCents = getServicePriceForDate(
+      service.id,
+      format(startsAt, "yyyy-MM-dd"),
+      service.priceCents,
+      settings,
+    );
+
     let stripePaymentIntentId = body.stripePaymentIntentId ?? null;
     let clientSecret: string | null = null;
 
     if (body.paymentMethod === "online") {
       if (!stripePaymentIntentId) {
-        const intent = await createManualCaptureIntent(service.priceCents, {
+        const intent = await createManualCaptureIntent(priceCents, {
           serviceId: service.id,
           customerName: body.customerName,
         });

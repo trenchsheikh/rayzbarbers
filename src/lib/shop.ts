@@ -57,5 +57,7 @@ export const DEFAULT_SERVICES = [
 ] as const;
 
 export function formatPrice(cents: number) {
-  return `$${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}`;
+  return `£${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}`;
 }
+
+export const CURRENCY_SYMBOL = "£";

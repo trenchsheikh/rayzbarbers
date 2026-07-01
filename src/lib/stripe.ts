@@ -22,7 +22,7 @@ export async function createManualCaptureIntent(amountCents: number, metadata: R
   const stripe = requireStripe();
   return stripe.paymentIntents.create({
     amount: amountCents,
-    currency: "usd",
+    currency: "gbp",
     capture_method: "manual",
     automatic_payment_methods: { enabled: true },
     metadata,

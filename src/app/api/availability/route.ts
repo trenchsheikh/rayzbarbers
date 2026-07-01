@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { getAvailableSlots } from "@/lib/availability";
 import { getServiceById } from "@/lib/services-data";
+import {
+  getServicePriceForDate,
+  getShopAvailability,
+} from "@/lib/shop-availability";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -19,6 +23,13 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Service not found" }, { status: 404 });
   }
 
+  const settings = await getShopAvailability();
+  const priceCents = getServicePriceForDate(
+    service.id,
+    date,
+    service.priceCents,
+    settings,
+  );
   const slots = await getAvailableSlots(date, service.durationMinutes);
-  return NextResponse.json({ slots });
+  return NextResponse.json({ slots, priceCents });
 }

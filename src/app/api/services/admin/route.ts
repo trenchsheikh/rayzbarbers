@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireDb } from "@/lib/db";
 import { services } from "@/lib/db/schema";
-import { getAdminUser } from "@/lib/supabase/server";
+import { getAdminUser } from "@/lib/admin-auth";
 import { updateServicePriceSchema } from "@/lib/validations";
 
 export async function PATCH(request: Request) {

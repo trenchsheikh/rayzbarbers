@@ -1,17 +1,28 @@
-import { and, eq, inArray, lt, gt } from "drizzle-orm";
-import { addDays, addMinutes, format, isBefore, isSameDay, set } from "date-fns";
+import { and, inArray, lt, gt } from "drizzle-orm";
+import { addDays, addMinutes, format, getDay, isBefore, isSameDay, set } from "date-fns";
 import { db, requireDb } from "./db";
 import { bookings } from "./db/schema";
-import { SHOP_HOURS } from "./shop";
+import {
+  getDefaultHoursForDate,
+  getHoursForDate,
+  getShopAvailability,
+  hasCustomHours,
+  hasCustomPrices,
+  isDateAvailable,
+  isScheduledOpen,
+  type DayHours,
+} from "./shop-availability";
 
 const SLOT_INTERVAL_MINUTES = 30;
 const ACTIVE_STATUSES = ["pending", "confirmed"] as const;
 
 export { getDayOptions } from "./shop";
 
-function generateSlotsForDate(date: Date, durationMinutes: number): Date[] {
-  const day = date.getDay();
-  const hours = SHOP_HOURS[day as keyof typeof SHOP_HOURS];
+function generateSlotsForDate(
+  date: Date,
+  durationMinutes: number,
+  hours: DayHours | null,
+): Date[] {
   if (!hours) return [];
 
   const slots: Date[] = [];
@@ -35,6 +46,14 @@ function generateSlotsForDate(date: Date, durationMinutes: number): Date[] {
   }
 
   return slots;
+}
+
+function slotWithinHours(startsAt: Date, durationMinutes: number, hours: DayHours) {
+  const startMinutes = startsAt.getHours() * 60 + startsAt.getMinutes();
+  const openMinutes = hours.open * 60;
+  const closeMinutes = hours.close * 60;
+  const endMinutes = startMinutes + durationMinutes;
+  return startMinutes >= openMinutes && endMinutes <= closeMinutes;
 }
 
 async function getBookingsForDate(dateStr: string) {
@@ -68,8 +87,12 @@ function overlaps(
 }
 
 export async function getAvailableSlots(dateStr: string, durationMinutes: number) {
+  const settings = await getShopAvailability();
+  if (!isDateAvailable(dateStr, settings)) return [];
+
+  const hours = getHoursForDate(dateStr, settings);
   const date = new Date(`${dateStr}T12:00:00`);
-  const slots = generateSlotsForDate(date, durationMinutes);
+  const slots = generateSlotsForDate(date, durationMinutes, hours);
   const dayBookings = await getBookingsForDate(dateStr);
 
   const now = new Date();
@@ -92,8 +115,14 @@ export async function isSlotAvailable(
   durationMinutes: number,
   excludeBookingId?: string,
 ) {
-  if (!db) return true;
   const dayStr = format(startsAt, "yyyy-MM-dd");
+  const settings = await getShopAvailability();
+  if (!isDateAvailable(dayStr, settings)) return false;
+
+  const hours = getHoursForDate(dayStr, settings);
+  if (!hours || !slotWithinHours(startsAt, durationMinutes, hours)) return false;
+
+  if (!db) return true;
   const dayBookings = await getBookingsForDate(dayStr);
   return !dayBookings
     .filter((b) => b.id !== excludeBookingId)
@@ -101,7 +130,16 @@ export async function isSlotAvailable(
 }
 
 export async function getCalendarMonth(year: number, month: number) {
-  if (!db) return { days: [] as { date: string; booked: number; pending: number }[] };
+  const settings = await getShopAvailability();
+
+  if (!db) {
+    return {
+      year,
+      month,
+      days: [] as CalendarDay[],
+      settings,
+    };
+  }
 
   const start = new Date(year, month, 1);
   const end = new Date(year, month + 1, 0, 23, 59, 59);
@@ -117,18 +155,45 @@ export async function getCalendarMonth(year: number, month: number) {
       ),
     );
 
-  const days: { date: string; booked: number; pending: number }[] = [];
+  const days: CalendarDay[] = [];
   const daysInMonth = end.getDate();
   for (let d = 1; d <= daysInMonth; d++) {
     const date = format(new Date(year, month, d), "yyyy-MM-dd");
     const dayRows = rows.filter(
       (r) => format(r.startsAt, "yyyy-MM-dd") === date,
     );
+    const scheduledOpen = isScheduledOpen(new Date(`${date}T12:00:00`));
+    const override = settings.days[date];
+    const defaultHours = getDefaultHoursForDate(date);
+    const effectiveHours = getHoursForDate(date, settings);
     days.push({
       date,
       booked: dayRows.filter((r) => r.status === "confirmed").length,
       pending: dayRows.filter((r) => r.status === "pending").length,
+      available: isDateAvailable(date, settings),
+      scheduledOpen,
+      hasCustomPrices: hasCustomPrices(date, settings),
+      customPrices: override?.prices,
+      hasCustomHours: hasCustomHours(date, settings),
+      hours: effectiveHours ?? undefined,
+      defaultHours: defaultHours ?? undefined,
     });
   }
-  return { days };
+
+  const leadingBlanks = (getDay(start) + 6) % 7;
+
+  return { year, month, days, leadingBlanks, settings };
 }
+
+export type CalendarDay = {
+  date: string;
+  booked: number;
+  pending: number;
+  available: boolean;
+  scheduledOpen: boolean;
+  hasCustomPrices: boolean;
+  customPrices?: Record<string, number>;
+  hasCustomHours: boolean;
+  hours?: { open: number; close: number };
+  defaultHours?: { open: number; close: number };
+};

@@ -1,11 +1,15 @@
 "use client";
 
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { RayzLogo } from "@/components/rayz-logo";
+import { CalendarTab } from "@/components/admin/calendar-tab";
+import { UpcomingBookingsCalendar } from "@/components/admin/upcoming-bookings-calendar";
 import type { Booking, Service } from "@/lib/db/schema";
-import { formatPrice } from "@/lib/shop";
+import { formatPrice, CURRENCY_SYMBOL } from "@/lib/shop";
+import type { CalendarDay } from "@/lib/availability";
 import { cn } from "@/lib/utils";
 
 type Tab = "pending" | "upcoming" | "calendar" | "services";
@@ -19,11 +23,11 @@ const TAB_COPY: Record<Tab, { heading: string; sub: string }> = {
   },
   upcoming: {
     heading: "Upcoming Bookings",
-    sub: "Confirmed appointments on the books",
+    sub: "Week view of confirmed appointments by day and time",
   },
   calendar: {
     heading: "Calendar",
-    sub: "A quick look at the week ahead",
+    sub: "Select days to set availability and custom prices",
   },
   services: {
     heading: "Services & Pricing",
@@ -36,13 +40,15 @@ function paymentLabel(method: string) {
 }
 
 export function AdminDashboard({ initialServices }: { initialServices: Service[] }) {
+  const router = useRouter();
   const [tab, setTab] = useState<Tab>("pending");
   const [pending, setPending] = useState<BookingRow[]>([]);
   const [upcoming, setUpcoming] = useState<BookingRow[]>([]);
   const [services, setServices] = useState(initialServices);
-  const [calendarDays, setCalendarDays] = useState<
-    { date: string; booked: number; pending: number }[]
-  >([]);
+  const [calendarYear, setCalendarYear] = useState(() => new Date().getFullYear());
+  const [calendarMonth, setCalendarMonth] = useState(() => new Date().getMonth());
+  const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
+  const [calendarLeadingBlanks, setCalendarLeadingBlanks] = useState(0);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [priceDraft, setPriceDraft] = useState("");
 
@@ -71,15 +77,15 @@ export function AdminDashboard({ initialServices }: { initialServices: Service[]
   }, [enrich]);
 
   const loadCalendar = useCallback(async () => {
-    const now = new Date();
     const res = await fetch(
-      `/api/calendar?year=${now.getFullYear()}&month=${now.getMonth()}`,
+      `/api/calendar?year=${calendarYear}&month=${calendarMonth}`,
     );
     if (res.ok) {
       const data = await res.json();
       setCalendarDays(data.days ?? []);
+      setCalendarLeadingBlanks(data.leadingBlanks ?? 0);
     }
-  }, []);
+  }, [calendarYear, calendarMonth]);
 
   useEffect(() => {
     loadBookings();
@@ -133,6 +139,17 @@ export function AdminDashboard({ initialServices }: { initialServices: Service[]
     setEditingId(null);
   };
 
+  const logout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" });
+    router.push("/admin/login");
+    router.refresh();
+  };
+
+  const shiftCalendarMonth = (year: number, month: number) => {
+    setCalendarYear(year);
+    setCalendarMonth(month);
+  };
+
   const navBtn = (active: boolean) =>
     cn(
       "mb-0.5 flex w-full items-center justify-between rounded-lg px-3.5 py-2.5 text-left text-sm font-semibold",
@@ -143,7 +160,7 @@ export function AdminDashboard({ initialServices }: { initialServices: Service[]
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="flex w-56 shrink-0 flex-col gap-1 border-r border-border bg-rayz-panel p-4 pt-8">
+      <aside className="flex min-h-screen w-56 shrink-0 flex-col gap-1 border-r border-border bg-rayz-panel p-4 pt-8">
         <RayzLogo size="md" className="mb-6" />
         <button
           type="button"
@@ -178,9 +195,21 @@ export function AdminDashboard({ initialServices }: { initialServices: Service[]
         >
           Services &amp; Pricing
         </button>
+        <button
+          type="button"
+          onClick={logout}
+          className="mt-auto rounded-lg px-3.5 py-2.5 text-left text-sm font-semibold text-muted-foreground hover:text-foreground"
+        >
+          Sign out
+        </button>
       </aside>
 
-      <main className="max-w-3xl flex-1 overflow-visible p-8 md:p-10">
+      <main
+        className={cn(
+          "flex-1 overflow-visible p-8 md:p-10",
+          tab === "upcoming" || tab === "calendar" ? "max-w-6xl" : "max-w-3xl",
+        )}
+      >
         <h1 className="font-anton text-3xl tracking-wide">
           {TAB_COPY[tab].heading}
         </h1>
@@ -239,70 +268,19 @@ export function AdminDashboard({ initialServices }: { initialServices: Service[]
         )}
 
         {tab === "upcoming" && (
-          <div className="space-y-3">
-            {upcoming.map((bk) => (
-              <div
-                key={bk.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-5 py-4"
-              >
-                <div>
-                  <p className="font-oswald font-semibold">{bk.customerName}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {bk.serviceName} ·{" "}
-                    {format(bk.startsAt, "EEE MMM d, h:mm a")}
-                  </p>
-                  <span className="mt-1.5 inline-block rounded-full bg-muted px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
-                    {paymentLabel(bk.paymentMethod)}
-                  </span>
-                </div>
-                <span className="rounded-full bg-emerald-500/15 px-3.5 py-1.5 text-xs font-bold text-emerald-400">
-                  Confirmed
-                </span>
-              </div>
-            ))}
-            {upcoming.length === 0 && (
-              <p className="text-sm text-muted-foreground">
-                No confirmed bookings yet.
-              </p>
-            )}
-          </div>
+          <UpcomingBookingsCalendar bookings={upcoming} />
         )}
 
         {tab === "calendar" && (
-          <div className="overflow-auto rounded-2xl border border-border bg-card p-5">
-            <div className="grid min-w-[560px] grid-cols-7 gap-1.5">
-              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-                <div
-                  key={d}
-                  className="pb-1 text-center text-xs font-semibold text-muted-foreground"
-                >
-                  {d}
-                </div>
-              ))}
-              {calendarDays.map((day) => (
-                <button
-                  key={day.date}
-                  type="button"
-                  onClick={() => day.pending > 0 && setTab("pending")}
-                  className={cn(
-                    "h-5 rounded",
-                    day.booked > 0 && "bg-foreground/30",
-                    day.pending > 0 &&
-                      "border-2 border-rayz-gold bg-transparent",
-                    day.booked === 0 &&
-                      day.pending === 0 &&
-                      "bg-muted/40",
-                  )}
-                  title={`${day.date}: ${day.booked} booked, ${day.pending} pending`}
-                />
-              ))}
-            </div>
-            <div className="mt-4 flex gap-4 text-xs text-muted-foreground">
-              <span>■ booked</span>
-              <span className="text-rayz-gold">■ pending — click to review</span>
-              <span>□ open</span>
-            </div>
-          </div>
+          <CalendarTab
+            services={services}
+            calendarYear={calendarYear}
+            calendarMonth={calendarMonth}
+            calendarDays={calendarDays}
+            calendarLeadingBlanks={calendarLeadingBlanks}
+            onMonthChange={shiftCalendarMonth}
+            onRefresh={loadCalendar}
+          />
         )}
 
         {tab === "services" && (
@@ -321,7 +299,7 @@ export function AdminDashboard({ initialServices }: { initialServices: Service[]
                 {editingId === svc.id ? (
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-0.5 rounded-lg border-2 border-rayz-gold px-2.5 py-1.5">
-                      <span className="text-sm text-muted-foreground">$</span>
+                      <span className="text-sm text-muted-foreground">{CURRENCY_SYMBOL}</span>
                       <input
                         className="w-14 border-none bg-transparent text-sm font-bold outline-none"
                         value={priceDraft}

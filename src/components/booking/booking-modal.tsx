@@ -116,6 +116,7 @@ export function BookingModal({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [slots, setSlots] = useState<Slot[]>([]);
+  const [dayPriceCents, setDayPriceCents] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -133,6 +134,7 @@ export function BookingModal({
     setPhone("");
     setEmail("");
     setSlots([]);
+    setDayPriceCents(null);
     setSubmitting(false);
     setSubmitted(false);
     setClientSecret(null);
@@ -152,14 +154,25 @@ export function BookingModal({
     if (!date || !serviceId) return;
     fetch(`/api/availability?date=${date}&serviceId=${serviceId}`)
       .then((r) => r.json())
-      .then((data) => setSlots(data.slots ?? []))
-      .catch(() => setSlots([]));
+      .then((data) => {
+        setSlots(data.slots ?? []);
+        setDayPriceCents(
+          typeof data.priceCents === "number" ? data.priceCents : null,
+        );
+      })
+      .catch(() => {
+        setSlots([]);
+        setDayPriceCents(null);
+      });
   }, [date, serviceId]);
+
+  const effectivePriceCents =
+    dayPriceCents ?? selectedService?.priceCents ?? null;
 
   const reviewSummary = selectedService
     ? `${selectedService.name} · ${date ? dayOptions.find((d) => d.date === date)?.label : "no date"} · ${
         time ? format(new Date(time), "h:mm a") : "no time"
-      } · ${paymentMethod === "online" ? "Pay Online" : paymentMethod === "cash" ? "Pay Cash" : "—"}`
+      } · ${effectivePriceCents != null ? formatPrice(effectivePriceCents) : "—"} · ${paymentMethod === "online" ? "Pay Online" : paymentMethod === "cash" ? "Pay Cash" : "—"}`
     : "";
 
   const close = () => {
@@ -350,6 +363,11 @@ export function BookingModal({
                 onClick={() => setStep(2)}
               >
                 Continue
+                {effectivePriceCents != null && (
+                  <span className="ml-2 opacity-80">
+                    · {formatPrice(effectivePriceCents)}
+                  </span>
+                )}
               </GoldButton>
             </div>
           )}
